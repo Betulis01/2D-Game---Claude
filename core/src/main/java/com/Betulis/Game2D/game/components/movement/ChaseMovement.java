@@ -5,15 +5,19 @@ import com.Betulis.Game2D.game.components.stats.Health;
 
 public class ChaseMovement extends Movement {
 
-    public static final float DEFAULT_SPEED = 80f;
-
     private final float stopDistance;
     private final float range;
+    private final float speed;
     private Transform target;
 
-    public ChaseMovement(float stopDistance, float range) {
+    public ChaseMovement(float stopDistance, float range, float speed) {
         this.stopDistance = stopDistance;
         this.range        = range;
+        this.speed        = speed;
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 
     public void setTarget(Transform target) {

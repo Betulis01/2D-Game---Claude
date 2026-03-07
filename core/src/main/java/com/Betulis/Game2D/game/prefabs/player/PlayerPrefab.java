@@ -32,10 +32,10 @@ public class PlayerPrefab {
         playerObj.addComponent(new EntityMover(cfg.stats.moveSpeed));
 
         //Animation
-        SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, 3,8);
+        SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, cfg.sprite.frames, cfg.sprite.directions);
         AnimationDirector director = new AnimationDirector();
-        walkClips(sheet, director);
-        idleClips(sheet, director);
+        walkClips(sheet, director, cfg.sprite.frameDuration, cfg.sprite.frames - 1);
+        idleClips(sheet, director, cfg.sprite.idleFrameDuration);
         playerObj.addComponent(director);
         playerObj.addComponent(new AnimationUpdater());
         playerObj.addComponent(new SpriteRenderer(cfg.sprite.width, cfg.sprite.height));
@@ -60,17 +60,17 @@ public class PlayerPrefab {
         return playerObj;
     }
 
-    public void walkClips(SpriteSheetSlicer sheet, AnimationDirector director) {
+    public void walkClips(SpriteSheetSlicer sheet, AnimationDirector director, float frameDuration, int lastFrame) {
         //walk
-        AnimationClip walk_up = new AnimationClip(sheet, 0.2, 1, 0, 2, 0);
-        AnimationClip walk_right = new AnimationClip(sheet, 0.2, 1, 2, 2, 2);
-        AnimationClip walk_down = new AnimationClip(sheet, 0.2, 1, 4, 2, 4);
-        AnimationClip walk_left = new AnimationClip(sheet, 0.2, 1, 6, 2, 6);
-        
-        AnimationClip walk_up_right = new AnimationClip(sheet, 0.2, 1, 1, 2, 1);
-        AnimationClip walk_down_right = new AnimationClip(sheet, 0.2, 1, 3, 2, 3);
-        AnimationClip walk_down_left = new AnimationClip(sheet, 0.2, 1, 5, 2, 5);
-        AnimationClip walk_up_left = new AnimationClip(sheet, 0.2, 1, 7, 2, 7);
+        AnimationClip walk_up = new AnimationClip(sheet, frameDuration, 1, 0, lastFrame, 0);
+        AnimationClip walk_right = new AnimationClip(sheet, frameDuration, 1, 2, lastFrame, 2);
+        AnimationClip walk_down = new AnimationClip(sheet, frameDuration, 1, 4, lastFrame, 4);
+        AnimationClip walk_left = new AnimationClip(sheet, frameDuration, 1, 6, lastFrame, 6);
+
+        AnimationClip walk_up_right = new AnimationClip(sheet, frameDuration, 1, 1, lastFrame, 1);
+        AnimationClip walk_down_right = new AnimationClip(sheet, frameDuration, 1, 3, lastFrame, 3);
+        AnimationClip walk_down_left = new AnimationClip(sheet, frameDuration, 1, 5, lastFrame, 5);
+        AnimationClip walk_up_left = new AnimationClip(sheet, frameDuration, 1, 7, lastFrame, 7);
         
         director.add("walk_up", walk_up);
         director.add("walk_up_right", walk_up_right);
@@ -82,16 +82,16 @@ public class PlayerPrefab {
         director.add("walk_up_left", walk_up_left);
     }
 
-    public void idleClips(SpriteSheetSlicer sheet, AnimationDirector director) {
+    public void idleClips(SpriteSheetSlicer sheet, AnimationDirector director, float frameDuration) {
         //idle
-        AnimationClip idle_up = new AnimationClip(sheet, 0.3, 0, 0, 0, 0);
-        AnimationClip idle_up_right = new AnimationClip(sheet, 0.3, 0, 1, 0, 1);
-        AnimationClip idle_right = new AnimationClip(sheet, 0.3, 0, 2, 0, 2);
-        AnimationClip idle_down_right = new AnimationClip(sheet, 0.3, 0, 3, 0, 3);
-        AnimationClip idle_down = new AnimationClip(sheet, 0.3, 0, 4, 0, 4);
-        AnimationClip idle_down_left = new AnimationClip(sheet, 0.3, 0, 5, 0, 5);
-        AnimationClip idle_left = new AnimationClip(sheet, 0.3, 0, 6, 0, 6);
-        AnimationClip idle_up_left = new AnimationClip(sheet, 0.3, 0, 7, 0, 7);
+        AnimationClip idle_up = new AnimationClip(sheet, frameDuration, 0, 0, 0, 0);
+        AnimationClip idle_up_right = new AnimationClip(sheet, frameDuration, 0, 1, 0, 1);
+        AnimationClip idle_right = new AnimationClip(sheet, frameDuration, 0, 2, 0, 2);
+        AnimationClip idle_down_right = new AnimationClip(sheet, frameDuration, 0, 3, 0, 3);
+        AnimationClip idle_down = new AnimationClip(sheet, frameDuration, 0, 4, 0, 4);
+        AnimationClip idle_down_left = new AnimationClip(sheet, frameDuration, 0, 5, 0, 5);
+        AnimationClip idle_left = new AnimationClip(sheet, frameDuration, 0, 6, 0, 6);
+        AnimationClip idle_up_left = new AnimationClip(sheet, frameDuration, 0, 7, 0, 7);
     
 
         director.add("idle_up", idle_up);

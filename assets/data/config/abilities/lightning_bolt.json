@@ -1,7 +1,7 @@
 {
   "id": "lightning_bolt",
   "name": "LightningBolt",
-  "sprite": { "sheet": "abilities/lightning_bolt/lightning_bolt.png", "width": 16, "height": 16, "frames": 8, "directions": 1 },
+  "sprite": { "sheet": "abilities/lightning_bolt/lightning_bolt.png", "width": 16, "height": 16, "frames": 8, "directions": 1, "frameDuration": 0.2 },
   "collision": { "width": 2, "height": 2, "offsetX": 0, "offsetY": 0 },
   "hitbox": { "width": 4, "height": 4, "offsetX": 0, "offsetY": 0 },
   "stats": {

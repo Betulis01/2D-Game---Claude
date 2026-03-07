@@ -12,6 +12,7 @@ public class EntityConfig {
     public static class Sprite {
         public String sheet;
         public int width, height, frames, directions;
+        public float frameDuration, idleFrameDuration;
     }
 
     public static class Collision {
@@ -31,5 +32,6 @@ public class EntityConfig {
 
     public static class Stats {
         public float moveSpeed, maxHealth, attack, defense, attackSpeed, critChance, damage, cooldown, duration;
+        public float chaseRange;
     }
 }

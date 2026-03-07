@@ -2,10 +2,18 @@ package com.Betulis.Game2D.game.components.movement;
 
 public class WanderMovement extends Movement {
 
-    public static final float DEFAULT_SPEED    = 40f;
     private static final float WANDER_INTERVAL = 2.0f;
 
+    private final float speed;
     private float timer = 0f;
+
+    public WanderMovement(float speed) {
+        this.speed = speed;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
 
     @Override
     public void updateMovement(float dt) {

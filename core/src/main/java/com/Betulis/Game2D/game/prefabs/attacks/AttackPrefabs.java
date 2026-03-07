@@ -29,14 +29,14 @@ public final class AttackPrefabs {
         attack.getTransform().setRotation(angle);
 
         //Animation
-        SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, 8,1);
-        AnimationClip fly = new AnimationClip(sheet, 0.2, 0, 0, 7, 0);
-      
+        SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, cfg.sprite.frames, cfg.sprite.directions);
+        AnimationClip fly = new AnimationClip(sheet, cfg.sprite.frameDuration, 0, 0, cfg.sprite.frames - 1, 0);
+
         AnimationDirector director = new AnimationDirector();
         director.add("fly", fly);
         attack.addComponent(director);
         attack.addComponent(new AnimationUpdater());
-        attack.addComponent(new RotatedSpriteRenderer(16,16));
+        attack.addComponent(new RotatedSpriteRenderer(cfg.sprite.width, cfg.sprite.height));
 
         //Despawner
         attack.addComponent(new AttackOutsideMapDespawner());
@@ -49,7 +49,7 @@ public final class AttackPrefabs {
         //Hitbox
         EntityConfig.Hitbox hi = cfg.hitbox;
         attack.addComponent(new Hitbox(hi.width,hi.height,hi.offsetX,hi.offsetY));
-        
+
         //Damage
         attack.addComponent(new DamageOnHit(owner, cfg.stats.damage));
 
@@ -61,18 +61,18 @@ public final class AttackPrefabs {
 
         //Transform
         Transform ot = owner.getTransform();
-        attack.getTransform().setWorldPosition(ot.getWorldX(),ot.getWorldY());   
+        attack.getTransform().setWorldPosition(ot.getWorldX(),ot.getWorldY());
         float angle = (float) Math.toDegrees(Math.atan2(dir.y, dir.x));
         attack.getTransform().setRotation(angle);
 
         //Animation
-        SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, 8,1);
-        AnimationClip fly = new AnimationClip(sheet, 0.2, 0, 0, 7, 0);
+        SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, cfg.sprite.frames, cfg.sprite.directions);
+        AnimationClip fly = new AnimationClip(sheet, cfg.sprite.frameDuration, 0, 0, cfg.sprite.frames - 1, 0);
         AnimationDirector director = new AnimationDirector();
         director.add("fly", fly);
         attack.addComponent(director);
         attack.addComponent(new AnimationUpdater());
-        attack.addComponent(new RotatedSpriteRenderer(16,16));
+        attack.addComponent(new RotatedSpriteRenderer(cfg.sprite.width, cfg.sprite.height));
 
         //Despawner
         attack.addComponent(new AttackOutsideMapDespawner());

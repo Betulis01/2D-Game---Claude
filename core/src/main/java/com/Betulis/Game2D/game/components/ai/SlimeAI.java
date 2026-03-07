@@ -31,12 +31,12 @@ public class SlimeAI extends Component {
     public void aggro(Transform attacker) {
         chase.setTarget(attacker);
         entityMover.setMovement(chase);
-        entityMover.setSpeed(ChaseMovement.DEFAULT_SPEED);
+        entityMover.setSpeed(chase.getSpeed());
     }
 
     private void enterWander() {
         chase.setTarget(null);
         entityMover.setMovement(wander);
-        entityMover.setSpeed(WanderMovement.DEFAULT_SPEED);
+        entityMover.setSpeed(wander.getSpeed());
     }
 }

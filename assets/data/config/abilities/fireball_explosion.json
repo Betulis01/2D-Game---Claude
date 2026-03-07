@@ -1,0 +1,5 @@
+{
+  "id": "fireball_explosion",
+  "name": "FireballExplosion",
+  "sprite": { "sheet": "abilities/fireball/fireball_explode.png", "width": 16, "height": 16, "frames": 3, "directions": 1, "frameDuration": 0.08 }
+}
