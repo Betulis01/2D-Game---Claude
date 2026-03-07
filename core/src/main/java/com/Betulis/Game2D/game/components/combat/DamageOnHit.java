@@ -7,6 +7,7 @@ import com.Betulis.Game2D.engine.system.Component;
 import com.Betulis.Game2D.engine.system.GameObject;
 import com.Betulis.Game2D.game.components.AABB.Hitbox;
 import com.Betulis.Game2D.game.components.AABB.Hurtbox;
+import com.Betulis.Game2D.game.components.ai.SlimeAI;
 import com.Betulis.Game2D.game.components.stats.Health;
 import com.Betulis.Game2D.game.prefabs.attacks.FireballExplosion;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -42,6 +43,12 @@ public class DamageOnHit extends Component {
         owner.getComponent(CombatState.class).enterCombat();
         target.getComponent(CombatState.class).enterCombat();
 
+
+        //Aggro
+        SlimeAI slimeAI = target.getComponent(SlimeAI.class);
+        if (slimeAI != null) {
+            slimeAI.aggro(owner.getTransform());
+        }
 
         //Animation
         spawnExplosion(target);

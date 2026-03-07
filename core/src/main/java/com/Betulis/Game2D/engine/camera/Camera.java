@@ -40,12 +40,11 @@ public class Camera extends Component {
         setZoom(zoom + delta / 100);
     }
 
-    public void zoomTowards(float targetZoom) {
-        setZoom(zoom + (targetZoom - zoom));
-    }
-
     public void setZoom(float zoom) {
-        this.zoom = Math.max(0.25f, Math.min(zoom, 4.0f));
+        float minZoom = clampToWorld
+            ? Math.max(screenWidth / worldWidth, screenHeight / worldHeight)
+            : 0.25f;
+        this.zoom = Math.max(minZoom, Math.min(zoom, 4.0f));
     }
 
     public float getZoom() {

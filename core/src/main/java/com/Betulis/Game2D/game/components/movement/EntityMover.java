@@ -61,4 +61,12 @@ public final class EntityMover extends Component {
     public void setSpeed(float speed) {
         this.speed = speed;
     }
+
+    public void setMovement(Movement movement) {
+        this.movement = movement;
+    }
+
+    public Movement getMovement() {
+        return movement;
+    }
 }

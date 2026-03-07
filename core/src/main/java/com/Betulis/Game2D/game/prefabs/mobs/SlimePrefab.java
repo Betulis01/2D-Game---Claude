@@ -9,11 +9,13 @@ import com.Betulis.Game2D.engine.render.SpriteRenderer;
 import com.Betulis.Game2D.engine.system.GameObject;
 import com.Betulis.Game2D.engine.system.Transform;
 import com.Betulis.Game2D.engine.utils.SpriteSheetSlicer;
+import com.Betulis.Game2D.game.components.ai.SlimeAI;
 import com.Betulis.Game2D.game.components.animation.SlimeAnimation;
 import com.Betulis.Game2D.game.components.combat.CombatState;
 import com.Betulis.Game2D.game.components.AABB.Hurtbox;
+import com.Betulis.Game2D.game.components.movement.ChaseMovement;
 import com.Betulis.Game2D.game.components.movement.EntityMover;
-import com.Betulis.Game2D.game.components.movement.SlimeMovement;
+import com.Betulis.Game2D.game.components.movement.WanderMovement;
 import com.Betulis.Game2D.game.components.render.HealthRenderer;
 import com.Betulis.Game2D.game.components.stats.Health;
 import com.badlogic.gdx.graphics.Texture;
@@ -28,8 +30,11 @@ public class SlimePrefab {
         slimeObj.getComponent(Transform.class).setPosition(x, y);
 
         //Movement
-        slimeObj.addComponent(new SlimeMovement());
-        slimeObj.addComponent(new EntityMover(50));
+        float spriteWidth = cfg.sprite.width;
+        slimeObj.addComponent(new WanderMovement());
+        slimeObj.addComponent(new ChaseMovement(spriteWidth, 400f));
+        slimeObj.addComponent(new EntityMover(WanderMovement.DEFAULT_SPEED));
+        slimeObj.addComponent(new SlimeAI());
         
         //Animation
         SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, 3, 8);

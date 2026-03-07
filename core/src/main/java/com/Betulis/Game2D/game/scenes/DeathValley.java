@@ -51,9 +51,10 @@ public class DeathValley extends Scene {
         GameObject cameraObj = cameraPrefab.create(playerObj.getComponent(Transform.class), getGame().getScreenWidth(), getGame().getScreenHeight());
         addObject(cameraObj);
         
-        cameraObj.getComponent(Camera.class).setWorldBounds(map.width * map.tileWidth,map.height * map.tileHeight);
-        cameraObj.getComponent(Camera.class).setZoom(3);
-        setCamera(cameraObj.getComponent(Camera.class));
+        Camera camera = cameraObj.getComponent(Camera.class);
+        camera.setWorldBounds(map.width * map.tileWidth, map.height * map.tileHeight);
+        camera.setZoom(3);
+        setCamera(camera);
 
     }
 
