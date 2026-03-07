@@ -3,28 +3,28 @@ package com.Betulis.Game2D.game.components.animation;
 import com.Betulis.Game2D.engine.animation.AnimationDirector;
 import com.Betulis.Game2D.engine.math.Vector2;
 import com.Betulis.Game2D.engine.system.Component;
-import com.Betulis.Game2D.game.components.movement.Movement;
+import com.Betulis.Game2D.game.components.movement.EntityMover;
 
 public class PlayerAnimation extends Component {
 
-    private Movement movement;
+    private EntityMover entityMover;
     private AnimationDirector director;
 
     private Vector2 lastDir;
 
     @Override
     public void start() {
-        movement = getGameObject().getComponent(Movement.class);
-        director = getGameObject().getComponent(AnimationDirector.class);
-        lastDir = new Vector2(0, 1);
+        entityMover = getGameObject().getComponent(EntityMover.class);
+        director    = getGameObject().getComponent(AnimationDirector.class);
+        lastDir     = new Vector2(0, 1);
     }
 
     @Override
     public void update(float dt) {
-        if (movement == null || director == null) return;
-        Vector2 dir = movement.getDirection();
-        
-        if (movement.isMoving()) {
+        if (entityMover == null || director == null) return;
+
+        if (entityMover.isMoving()) {
+            Vector2 dir = entityMover.getDirection();
             walkDirectionFromVector(dir);
         } else {
             idleDirectionFromVector(lastDir);
@@ -35,8 +35,7 @@ public class PlayerAnimation extends Component {
         float x = dir.x;
         float y = dir.y;
 
-
-        if (x > 0 && y > 0) director.play("walk_up_right", true); 
+        if (x > 0 && y > 0) director.play("walk_up_right", true);
         else if (x > 0 && y < 0) director.play("walk_down_right", true);
         else if (x < 0 && y > 0) director.play("walk_up_left", true);
         else if (x < 0 && y < 0) director.play("walk_down_left", true);
@@ -61,5 +60,4 @@ public class PlayerAnimation extends Component {
         else if (y > 0) director.play("idle_up", false);
         else if (y < 0) director.play("idle_down", false);
     }
-
 }

@@ -62,6 +62,14 @@ public final class EntityMover extends Component {
         this.speed = speed;
     }
 
+    public boolean isMoving() {
+        return movement != null && movement.isMoving();
+    }
+
+    public Vector2 getDirection() {
+        return movement != null ? movement.getDirection() : null;
+    }
+
     public void setMovement(Movement movement) {
         this.movement = movement;
     }

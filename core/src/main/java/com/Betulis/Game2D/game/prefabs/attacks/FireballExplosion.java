@@ -8,7 +8,6 @@ import com.Betulis.Game2D.engine.config.ConfigLoader;
 import com.Betulis.Game2D.engine.config.EntityConfig;
 import com.Betulis.Game2D.engine.render.RotatedSpriteRenderer;
 import com.Betulis.Game2D.engine.system.GameObject;
-import com.Betulis.Game2D.engine.system.Transform;
 import com.Betulis.Game2D.engine.utils.SpriteSheetSlicer;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -17,9 +16,8 @@ public class FireballExplosion {
         EntityConfig cfg = new ConfigLoader().load("data/config/abilities/fireball_explosion.json");
         GameObject effect = new GameObject("FireballExplosion");
 
-        //Transform
-        Transform ot = owner.getTransform();
-        effect.getTransform().setWorldPosition(ot.getWorldX(), ot.getWorldY());
+        //Transform — parent to owner so the effect follows if it moves
+        effect.getTransform().setParent(owner.getTransform());
 
         //Animation
         SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, cfg.sprite.frames, cfg.sprite.directions);

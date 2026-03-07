@@ -58,13 +58,7 @@ public class DamageOnHit extends Component {
     }
 
     private void spawnExplosion(GameObject target) {
-
         GameObject explosion = FireballExplosion.create(target, getScene().getGame().getAssets().getTexture("abilities/fireball/fireball_explode.png"));
-
-        explosion.getTransform().setWorldPosition(
-            target.getTransform().getWorldX(),
-            target.getTransform().getWorldY()
-        );
         getScene().addObject(explosion);
     }
 }

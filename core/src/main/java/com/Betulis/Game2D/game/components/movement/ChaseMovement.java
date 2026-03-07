@@ -37,7 +37,7 @@ public class ChaseMovement extends Movement {
         if (target == null) {
             moving = false;
             return;
-        }
+        } 
 
         float dist = distToTarget();
 

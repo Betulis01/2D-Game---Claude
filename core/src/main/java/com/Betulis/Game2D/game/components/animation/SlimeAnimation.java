@@ -1,27 +1,25 @@
 package com.Betulis.Game2D.game.components.animation;
 
-import com.Betulis.Game2D.engine.utils.SpriteSheetSlicer;
-import com.Betulis.Game2D.game.components.movement.Movement;
 import com.Betulis.Game2D.engine.animation.AnimationDirector;
-import com.Betulis.Game2D.engine.math.Vector2;
 import com.Betulis.Game2D.engine.system.Component;
+import com.Betulis.Game2D.game.components.movement.EntityMover;
 
 public class SlimeAnimation extends Component {
 
-    private Movement movement;
+    private EntityMover entityMover;
     private AnimationDirector director;
 
     @Override
     public void start() {
-        movement = getGameObject().getComponent(Movement.class);
-        director = getGameObject().getComponent(AnimationDirector.class);
+        entityMover = getGameObject().getComponent(EntityMover.class);
+        director    = getGameObject().getComponent(AnimationDirector.class);
     }
 
     @Override
     public void update(float dt) {
-        if (movement == null || director == null) return;
+        if (entityMover == null || director == null) return;
 
-        if (movement.isMoving()) {
+        if (entityMover.isMoving()) {
             director.play("jump");
         } else {
             director.play("idle");

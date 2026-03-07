@@ -5,7 +5,7 @@
   "collision": { "width": 0, "height": 2, "offsetX": 5, "offsetY": 5 },
   "hurtbox": { "width":  12, "height":  10, "offsetX": 0, "offsetY": -2},
   "stats": {
-    "moveSpeed": 80.0,
+    "moveSpeed": 40.0,
     "chaseRange": 400.0,
     "maxHealth": 10,
     "attack": 10,
