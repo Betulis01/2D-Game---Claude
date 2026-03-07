@@ -33,7 +33,7 @@ public class SlimePrefab {
         float wanderSpeed = cfg.stats.moveSpeed * 0.8f;
         float chaseSpeed  = cfg.stats.moveSpeed * 1.2f;
         slimeObj.addComponent(new WanderMovement(wanderSpeed));
-        slimeObj.addComponent(new ChaseMovement(cfg.sprite.width, cfg.stats.chaseRange, chaseSpeed));
+        slimeObj.addComponent(new ChaseMovement(cfg.sprite.width, chaseSpeed));
         slimeObj.addComponent(new EntityMover(wanderSpeed));
         slimeObj.addComponent(new SlimeAI());
 

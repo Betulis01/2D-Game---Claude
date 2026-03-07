@@ -6,7 +6,6 @@
   "hurtbox": { "width":  12, "height":  10, "offsetX": 0, "offsetY": -2},
   "stats": {
     "moveSpeed": 40.0,
-    "chaseRange": 400.0,
     "maxHealth": 10,
     "attack": 10,
     "defense": 5,

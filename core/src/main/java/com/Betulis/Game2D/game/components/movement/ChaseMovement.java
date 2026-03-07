@@ -1,19 +1,20 @@
 package com.Betulis.Game2D.game.components.movement;
 
 import com.Betulis.Game2D.engine.system.Transform;
+import com.Betulis.Game2D.game.components.combat.CombatState;
 import com.Betulis.Game2D.game.components.stats.Health;
 
 public class ChaseMovement extends Movement {
 
-    private final float stopDistance;
-    private final float range;
+    private final float spriteWidth;
     private final float speed;
+    private float range;
     private Transform target;
 
-    public ChaseMovement(float stopDistance, float range, float speed) {
-        this.stopDistance = stopDistance;
-        this.range        = range;
+    public ChaseMovement(float spriteWidth, float speed) {
+        this.spriteWidth = spriteWidth;
         this.speed        = speed;
+        this.range = spriteWidth * 10;
     }
 
     public float getSpeed() {
@@ -29,6 +30,9 @@ public class ChaseMovement extends Movement {
         if (target == null) return true;
         Health h = target.getGameObject().getComponent(Health.class);
         if (h != null && h.isDead()) return true;
+        CombatState c = target.getGameObject().getComponent(CombatState.class);
+        if (c != null & !c.isInCombat()) return true;
+
         return distToTarget() > range;
     }
 
@@ -41,7 +45,7 @@ public class ChaseMovement extends Movement {
 
         float dist = distToTarget();
 
-        if (dist <= stopDistance) {
+        if (dist <= spriteWidth) {
             moving = false;
             return;
         }
