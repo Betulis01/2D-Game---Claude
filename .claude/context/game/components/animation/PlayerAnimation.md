@@ -2,36 +2,35 @@
 
 **File:** `core/.../game/components/animation/PlayerAnimation.java`
 **Extends:** `Component`
-**Role:** Maps player movement direction to the correct 8-directional walk or idle animation clip and sprite row each frame.
+**Role:** Maps player movement direction to the correct 8-directional walk or idle animation clip each frame.
 
 ## Update Logic
 ```
-if movement.isMoving():
-  clip = directional walk clip based on direction vector angle
-  row = corresponding sprite sheet row
+if entityMover.isMoving():
+  dir = entityMover.getDirection()
+  select walk clip from 8-way directional mapping
   director.play(clipName, true)
-  renderer.row = row
+  lastDir = dir
 else:
-  play idle clip for last known direction
-  renderer.row = last row
+  select idle clip based on lastDir
+  director.play(clipName, false)
 ```
 
 ## Direction Mapping (8-way)
 ```
-N, NE, E, SE, S, SW, W, NW → clip names "walk_N", "walk_NE", etc.
-                             → sprite rows 0–7 (depends on sheet layout)
+(+x,+y)=up_right  (+x,-y)=down_right  (-x,+y)=up_left  (-x,-y)=down_left
+(+x,0)=right  (-x,0)=left  (0,+y)=up  (0,-y)=down
 ```
 
 ## Dependencies
-- `Movement` (sibling) — direction vector and moving flag
+- `EntityMover` (sibling) — direction vector and moving flag (NOT Movement directly)
 - `AnimationDirector` (sibling) — clip switching
-- `SpriteRenderer` (sibling) — sets `row` for correct direction strip
 
 ## Rules
-- Remembers last direction for idle pose — entity faces last movement direction when standing
-- Animation names defined once in the prefab's clip registration — not hardcoded here (ideally)
-- Direction snapped to 8 angles from the normalized direction vector
+- Must read from `EntityMover`, not `getComponent(Movement.class)` — single source of truth for movement state
+- Remembers `lastDir` for idle pose — entity faces last movement direction when standing
+- Animation names defined once in the prefab's clip registration
 
 ## Known Issues
-- Walk and idle direction logic duplicated in separate methods — refactor to single direction→(clip,row) lookup
-- Animation names currently hardcoded as strings in this class
+- Walk and idle direction logic duplicated in separate methods — refactor to single direction→clip lookup
+- Animation names hardcoded as strings in this class

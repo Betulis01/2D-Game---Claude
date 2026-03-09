@@ -253,10 +253,15 @@ Input / AI
 ```
 Movement (abstract) → provides direction vector + moving flag
   PlayerController   — WASD → direction
-  SlimeMovement      — random wander AI
+  WanderMovement     — Reynolds circle-ahead wander with idle pauses and home radius
+  ChaseMovement      — direct pursuit of a target Transform
   Projectile         — fixed direction, always moving
 
 EntityMover          — integrates direction * speed * dt → Transform position
+                       holds the *active* Movement (swappable at runtime via setMovement())
+
+AI (game/components/ai/)
+  SlimeAI            — state machine that switches EntityMover between WanderMovement and ChaseMovement
 ```
 
 **Rules:**
@@ -266,8 +271,10 @@ EntityMover          — integrates direction * speed * dt → Transform positio
   clampedX = clamp(worldX, halfWidth, mapWidth - halfWidth)
   clampedY = clamp(worldY, halfHeight, mapHeight - halfHeight)
   ```
-- Movement speed and AI timers come from `EntityConfig` — not hardcoded
+- Movement speed comes from `EntityConfig` — not hardcoded in Movement subclasses
 - Projectiles bypass bounds clamping (destroyed by `AttackOutsideMapDespawner` instead)
+- `EntityMover` is the single source of truth for movement state — animation components must call `entityMover.isMoving()` / `entityMover.getDirection()`, never `getComponent(Movement.class)` directly
+- Each Movement subclass owns its speed value and exposes `getSpeed()` — AI controllers read this when switching behaviors
 
 ---
 
@@ -413,7 +420,8 @@ core/src/main/java/
     ├── input/           InputBindings, PlayerInput
     ├── components/
     │   ├── movement/    Movement, PlayerController, EntityMover, Projectile,
-    │   │                SlimeMovement
+    │   │                WanderMovement, ChaseMovement
+    │   ├── ai/          SlimeAI
     │   ├── combat/      AttackSpawner, AttackDurationDespawner, DamageOnHit,
     │   │                CombatState
     │   ├── collision/   Hitbox, Hurtbox, AttackOutsideMapDespawner
@@ -437,7 +445,6 @@ Engine code (`engine/`) has **zero dependencies** on game code (`game/`). Game c
 | Hardcoded spawn positions | `DeathValley.java` | Use Tiled object layer |
 | Hardcoded slime count (10 at same pos) | `DeathValley.java` | Use Tiled spawn objects |
 | Combat timeout hardcoded `10.0f` | `CombatState.java` | Read from EntityConfig |
-| SlimeMovement timer hardcoded `2.0f` | `SlimeMovement.java` | Read from EntityConfig |
 | `AttackSpawner` switch on attack ID | `AttackSpawner.java` | Move dispatch to prefab factory |
 | Fireball/LightningBolt code duplicated | `AttackPrefabs.java` | Extract shared `createProjectile()` base |
 | EntityConfig fields all public | `EntityConfig.java` | No change needed for now (LibGDX Json requires it) |

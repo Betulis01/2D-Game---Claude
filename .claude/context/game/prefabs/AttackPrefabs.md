@@ -5,28 +5,29 @@
 
 ## Methods
 
-### `createFireball(scene, origin, dirX, dirY, cfg)`
+### `createFireball(cfg, owner, dir, asset)`
 **GameObject: "Fireball"**
 | Component | Purpose |
 |-----------|---------|
-| `Transform` | Spawned at origin entity's position |
+| `Transform` | Spawned at owner's world position, rotated to face direction |
 | `Projectile` | Fixed direction movement |
-| `EntityMover` | Applies projectile speed |
-| `RotatedSpriteRenderer` | Draws sprite rotated to face direction |
-| `AnimationDirector/Updater` | Clip playback |
-| `Hitbox` | Offensive bounds |
+| `EntityMover` | Applies projectile speed from cfg |
+| `RotatedSpriteRenderer` | Draws sprite rotated to face direction (size from cfg.sprite) |
+| `AnimationDirector/Updater` | Clip playback — frameDuration and frame count from cfg |
+| `Hitbox` | Offensive bounds from cfg.hitbox |
 | `DamageOnHit` | Hit detection → damage |
-| `AttackDurationDespawner` | Destroys after max duration |
+| `AttackDurationDespawner` | Destroys after cfg.stats.duration |
 | `AttackOutsideMapDespawner` | Destroys when leaving map |
 
-### `createLightningBolt(scene, origin, dirX, dirY, cfg)`
-**Identical component setup to Fireball** — different sprite and stats from cfg.
+### `createLightningBolt(cfg, owner, dir, asset)`
+Identical component setup to Fireball — different sprite and stats from its own cfg.
 
 ## Rules
-- All stats (speed, damage, duration) from EntityConfig cfg parameter
-- No hardcoded numbers in prefab setup
-- Both attack types share a `createProjectile()` base method to avoid duplication
+- All stats (speed, damage, duration) and all sprite dimensions from `EntityConfig cfg` parameter
+- `SpriteSheetSlicer` uses `cfg.sprite.frames` and `cfg.sprite.directions`
+- `RotatedSpriteRenderer` uses `cfg.sprite.width/height`
+- Animation end frame = `cfg.sprite.frames - 1` — no hardcoded frame indices
+- `frameDuration` from `cfg.sprite.frameDuration`
 
 ## Known Issues
-- `createFireball` and `createLightningBolt` are mostly duplicated — extract shared `createProjectile()` base
-- Hit effect hardcoded to FireballExplosion in DamageOnHit — should be configurable per attack type
+- `createFireball` and `createLightningBolt` bodies are mostly duplicated — extract shared `createProjectile()` base
