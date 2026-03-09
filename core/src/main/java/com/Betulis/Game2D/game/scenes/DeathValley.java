@@ -8,6 +8,7 @@ import com.Betulis.Game2D.engine.system.GameObject;
 import com.Betulis.Game2D.engine.system.Scene;
 import com.Betulis.Game2D.engine.system.Transform;
 import com.Betulis.Game2D.engine.tiled.TiledMapLoader;
+import com.Betulis.Game2D.game.components.stats.PlayerXP;
 import com.Betulis.Game2D.game.prefabs.camera.CameraPrefab;
 import com.Betulis.Game2D.game.prefabs.mobs.SlimePrefab;
 import com.Betulis.Game2D.game.prefabs.player.PlayerPrefab;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class DeathValley extends Scene {
     private GameObject mapObject;
+    private PlayerXP playerXP;
 
     public DeathValley() {
         super(); 
@@ -34,9 +36,10 @@ public class DeathValley extends Scene {
         //AABB
         mapBounds = new AABB(0, 0, map.getWidth(), map.getHeight());
 
-        //Player 
+        //Player
         PlayerPrefab playerPrefab = new PlayerPrefab();
         GameObject playerObj = playerPrefab.create(100, 100,getGame().getAssets().getTexture("player/orc8.png"));
+        playerXP = playerObj.getComponent(PlayerXP.class);
         addObject(playerObj);
         
         //Slime
@@ -57,6 +60,8 @@ public class DeathValley extends Scene {
         setCamera(camera);
 
     }
+
+    public PlayerXP getPlayerXP() { return playerXP; }
 
     @Override
     public void update(float dt) {

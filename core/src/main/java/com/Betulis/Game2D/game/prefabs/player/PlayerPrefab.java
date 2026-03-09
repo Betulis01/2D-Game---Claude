@@ -16,6 +16,7 @@ import com.Betulis.Game2D.game.components.combat.CombatState;
 import com.Betulis.Game2D.game.components.movement.EntityMover;
 import com.Betulis.Game2D.game.components.movement.PlayerController;
 import com.Betulis.Game2D.game.components.stats.Health;
+import com.Betulis.Game2D.game.components.stats.PlayerXP;
 import com.Betulis.Game2D.game.input.PlayerInput;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -45,6 +46,11 @@ public class PlayerPrefab {
 
         //Health
         playerObj.addComponent(new Health(cfg.stats.maxHealth, 0));
+
+        //XP
+        PlayerXP xp = new PlayerXP();
+        xp.init(cfg.stats);
+        playerObj.addComponent(xp);
         
         //Combat
         playerObj.addComponent(new CombatState());

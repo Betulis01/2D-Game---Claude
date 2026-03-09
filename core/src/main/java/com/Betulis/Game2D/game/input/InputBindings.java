@@ -9,7 +9,6 @@ import com.badlogic.gdx.InputAdapter;
 
 public final class InputBindings extends InputAdapter {
 
-    // LibGDX uses int for Keys and Buttons, not Objects
     private final Map<Action, Integer> keyBindings;
     private final Map<Action, Integer> mouseBindings;
     private float scrollDelta;
@@ -20,27 +19,40 @@ public final class InputBindings extends InputAdapter {
         MOVE_RIGHT,
         MOVE_UP,
         MOVE_DOWN,
-        LIGHTNING_BOLT,
-        FIREBALL
+        SPELL_1, SPELL_2, SPELL_3, SPELL_4,
+        MOUSE_SPELL_1, MOUSE_SPELL_2,
+        TOGGLE_BAG, TOGGLE_CHARACTER, TOGGLE_SPELLBOOK, TOGGLE_TALENT
     }
 
     public InputBindings() {
         this.keyBindings = new EnumMap<>(Action.class);
         this.mouseBindings = new EnumMap<>(Action.class);
 
-        // Default bindings using LibGDX constants
+        // Movement
         keyBindings.put(Action.DEBUG,       Input.Keys.SPACE);
         keyBindings.put(Action.MOVE_LEFT,   Input.Keys.A);
         keyBindings.put(Action.MOVE_RIGHT,  Input.Keys.D);
         keyBindings.put(Action.MOVE_UP,     Input.Keys.W);
         keyBindings.put(Action.MOVE_DOWN,   Input.Keys.S);
 
-        // LibGDX Buttons: LEFT (Primary), RIGHT (Secondary), MIDDLE, etc.
-        mouseBindings.put(Action.LIGHTNING_BOLT, Input.Buttons.RIGHT);
-        mouseBindings.put(Action.FIREBALL,       Input.Buttons.LEFT);
+        // Keyboard spell bar
+        keyBindings.put(Action.SPELL_1, Input.Keys.NUM_1);
+        keyBindings.put(Action.SPELL_2, Input.Keys.NUM_2);
+        keyBindings.put(Action.SPELL_3, Input.Keys.NUM_3);
+        keyBindings.put(Action.SPELL_4, Input.Keys.NUM_4);
+
+        // Mouse spell bar — LEFT = slot 0, RIGHT = slot 1wd
+        mouseBindings.put(Action.MOUSE_SPELL_1, Input.Buttons.LEFT);
+        mouseBindings.put(Action.MOUSE_SPELL_2, Input.Buttons.RIGHT);
+
+        // Panel toggles
+        keyBindings.put(Action.TOGGLE_BAG,       Input.Keys.B);
+        keyBindings.put(Action.TOGGLE_CHARACTER, Input.Keys.C);
+        keyBindings.put(Action.TOGGLE_SPELLBOOK, Input.Keys.P);
+        keyBindings.put(Action.TOGGLE_TALENT,    Input.Keys.T);
     }
 
-    // "Pressed" usually implies a single trigger (Just Pressed)
+    /** Returns true once on the frame the action is triggered (just-pressed). */
     public boolean isPressed(Action action) {
         if (keyBindings.containsKey(action)) {
             return Gdx.input.isKeyJustPressed(keyBindings.get(action));
@@ -51,7 +63,7 @@ public final class InputBindings extends InputAdapter {
         return false;
     }
 
-    // "Held" implies continuous state
+    /** Returns true while the action input is held down. */
     public boolean isHeld(Action action) {
         if (keyBindings.containsKey(action)) {
             return Gdx.input.isKeyPressed(keyBindings.get(action));
@@ -62,6 +74,24 @@ public final class InputBindings extends InputAdapter {
         return false;
     }
 
+    /**
+     * Returns a short display name for the current binding of the given action,
+     * e.g. "1", "LMB", "RMB". Returns null if the action has no binding.
+     */
+    public String getDisplayName(Action action) {
+        if (keyBindings.containsKey(action)) {
+            return Input.Keys.toString(keyBindings.get(action));
+        }
+        if (mouseBindings.containsKey(action)) {
+            int btn = mouseBindings.get(action);
+            if (btn == Input.Buttons.LEFT)   return "LMB";
+            if (btn == Input.Buttons.RIGHT)  return "RMB";
+            if (btn == Input.Buttons.MIDDLE) return "MMB";
+            return "M" + btn;
+        }
+        return null;
+    }
+
     public void bind(Action action, int key) {
         keyBindings.put(action, key);
     }
@@ -70,23 +100,18 @@ public final class InputBindings extends InputAdapter {
         return keyBindings.getOrDefault(action, -1);
     }
 
-
-
     // --- INPUT PROCESSOR OVERRIDES ---
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        // In LibGDX, amountY is the vertical scroll. 
-        // Positive usually means scrolling down (zoom out).
         this.scrollDelta = amountY;
-        return true; 
+        return true;
     }
 
     /** Returns the scroll amount and resets it for the next frame. */
     public float getZoomDelta() {
-        float delta =- scrollDelta;
-        scrollDelta = 0; // Consume the event
+        float delta = -scrollDelta;
+        scrollDelta = 0;
         return delta;
     }
-
 }

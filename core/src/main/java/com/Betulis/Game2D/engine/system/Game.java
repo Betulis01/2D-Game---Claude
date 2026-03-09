@@ -4,6 +4,8 @@ import com.Betulis.Game2D.engine.render.DebugRender;
 import com.Betulis.Game2D.engine.utils.Assets;
 import com.Betulis.Game2D.game.input.InputBindings;
 import com.Betulis.Game2D.game.scenes.DeathValley;
+import com.Betulis.Game2D.game.ui.UIAssetGenerator;
+import com.Betulis.Game2D.game.ui.UIManager;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -18,6 +20,7 @@ public class Game extends ApplicationAdapter {
     private DebugRender debugRender;
     private BitmapFont font;
     private Assets assets;
+    private UIManager ui;
 
     //screen
     private int screenWidth, screenHeight;
@@ -39,6 +42,10 @@ public class Game extends ApplicationAdapter {
 
         scene = new DeathValley();
         scene.load(this);
+
+        UIAssetGenerator.generateIfAbsent();
+        ui = new UIManager();
+        ui.init(this, ((DeathValley) scene).getPlayerXP());
     }
 
     public void initWindow() {
@@ -66,9 +73,11 @@ public class Game extends ApplicationAdapter {
         timeSeconds += dt;
         
         scene.update(dt); //update
-        
+        ui.update(dt);    //ui update
+
         batch.begin();
         scene.render(batch); //render
+        ui.render(batch);    //ui render
         debugRender.render(scene, batch);
         batch.end();
     }
@@ -101,5 +110,9 @@ public class Game extends ApplicationAdapter {
 
     public float getTime() {
         return timeSeconds;
+    }
+
+    public UIManager getUI() {
+        return ui;
     }
 }
