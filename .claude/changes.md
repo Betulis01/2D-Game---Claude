@@ -5,6 +5,14 @@
 
 ---
 
+## 2026-03-11
+- PanelMenuBar → removed procedural pixel drawing; each button now uses its own PNG texture passed from UIManager
+- UIManager → added `btnBag/btnChar/btnBook/btnTal` textures loaded via `loadUI()` (safe fallback to whitePixel)
+- PanelMenuBar → open-state tint changed from dark-blue fill to light-blue (HIGHLIGHT) tint over the button texture
+- Texture filenames: `bag.png` exists; `char.png`, `spellbook.png`, `talent.png` fall back to white until added
+
+---
+
 ## 2026-03-07 (session 2)
 - Slime chase AI → replaced SlimeMovement with WanderMovement + ChaseMovement + SlimeAI (strategy pattern + state machine)
 - Reynolds circle-ahead wander → WanderMovement: smooth arcing paths, idle pauses 2-10s, home radius 100px
