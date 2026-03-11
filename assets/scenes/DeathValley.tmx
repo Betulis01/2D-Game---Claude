@@ -21,11 +21,5 @@
 </data>
  </layer>
  <objectgroup id="2" name="Collision"/>
- <objectgroup id="3" name="Objects">
-  <object id="10" gid="2" x="138.667" y="116.333" width="52" height="26">
-   <properties>
-    <property name="renderYOffset" value="-13"/>
-   </properties>
-  </object>
- </objectgroup>
+ <objectgroup id="3" name="Objects"/>
 </map>

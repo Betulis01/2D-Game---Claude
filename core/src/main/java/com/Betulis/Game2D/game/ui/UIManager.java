@@ -84,11 +84,11 @@ public class UIManager {
 
         // Panel menu — right-aligned at same y as spell bar, to the right of mouse bar
         float menuY = spellBar.getY();
-        panelMenu = new PanelMenuBar(0, menuY, whitePixel);
-        panelMenu.addButton("Bag",   "B", bag);
-        panelMenu.addButton("Char",  "C", character);
-        panelMenu.addButton("Book",  "P", spellBook);
-        panelMenu.addButton("Tal",   "T", talents);
+        panelMenu = new PanelMenuBar(0, menuY, whitePixel, input);
+        panelMenu.addButton("Bag",   InputBindings.Action.TOGGLE_BAG,       bag);
+        panelMenu.addButton("Char",  InputBindings.Action.TOGGLE_CHARACTER, character);
+        panelMenu.addButton("Book",  InputBindings.Action.TOGGLE_SPELLBOOK, spellBook);
+        panelMenu.addButton("Tal",   InputBindings.Action.TOGGLE_TALENT,    talents);
         panelMenu.setRightEdge(screenW - 10f);
 
         // Wire drag listeners on spellbook drag-source slots

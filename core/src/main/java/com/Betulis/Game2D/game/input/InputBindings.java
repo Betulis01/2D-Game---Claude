@@ -48,7 +48,7 @@ public final class InputBindings extends InputAdapter {
         // Panel toggles
         keyBindings.put(Action.TOGGLE_BAG,       Input.Keys.B);
         keyBindings.put(Action.TOGGLE_CHARACTER, Input.Keys.C);
-        keyBindings.put(Action.TOGGLE_SPELLBOOK, Input.Keys.P);
+        keyBindings.put(Action.TOGGLE_SPELLBOOK, Input.Keys.N);
         keyBindings.put(Action.TOGGLE_TALENT,    Input.Keys.T);
     }
 

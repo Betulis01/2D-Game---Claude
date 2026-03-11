@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class XPBarPanel extends UIWidget {
     private static final int SEGMENTS = 6;
-    private static final float SEG_W = 78f;
-    private static final float SEG_H = 16f;
+    private static final float SEG_W = 20f;
+    private static final float SEG_H = 5f;
     private static final float SEG_GAP = 2f;
 
     private final Texture xpFull;

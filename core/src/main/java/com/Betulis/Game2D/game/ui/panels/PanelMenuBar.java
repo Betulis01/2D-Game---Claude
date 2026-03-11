@@ -1,5 +1,6 @@
 package com.Betulis.Game2D.game.ui.panels;
 
+import com.Betulis.Game2D.game.input.InputBindings;
 import com.Betulis.Game2D.game.ui.core.UIPanel;
 import com.Betulis.Game2D.game.ui.core.UIWidget;
 import com.badlogic.gdx.graphics.Color;
@@ -26,10 +27,11 @@ public class PanelMenuBar extends UIWidget {
 
     private final List<Entry> entries = new ArrayList<>();
     private Texture pixel;
+    private InputBindings input;
 
     private static class Entry {
         String label;
-        String keybind;      // shown bottom-right as hint, e.g. "B"
+        InputBindings.Action boundAction;
         UIPanel target;
         float x, y, w, h;
 
@@ -43,8 +45,9 @@ public class PanelMenuBar extends UIWidget {
      * @param y          bottom y, matching the spell bar row
      * @param pixel      white 1×1 texture for tinted rect drawing
      */
-    public PanelMenuBar(float rightEdgeX, float y, Texture pixel) {
+    public PanelMenuBar(float rightEdgeX, float y, Texture pixel, InputBindings input) {
         this.pixel = pixel;
+        this.input = input;
         this.y = y;
         this.h = BTN_H;
         this.visible = true;
@@ -52,11 +55,11 @@ public class PanelMenuBar extends UIWidget {
     }
 
     /** Call this after construction for each panel button, left-to-right order. */
-    public void addButton(String label, String keybind, UIPanel target) {
+    public void addButton(String label, InputBindings.Action action, UIPanel target) {
         Entry e = new Entry();
-        e.label   = label;
-        e.keybind = keybind;
-        e.target  = target;
+        e.label       = label;
+        e.boundAction = action;
+        e.target      = target;
         e.w = BTN_W;
         e.h = BTN_H;
         entries.add(e);
@@ -104,7 +107,7 @@ public class PanelMenuBar extends UIWidget {
 
             // Keybind hint bottom-right in yellow
             font.setColor(Color.YELLOW);
-            font.draw(batch, e.keybind, e.x + e.w - 10, e.y + 10);
+            font.draw(batch, input.getDisplayName(e.boundAction), e.x + e.w - 10, e.y + 10);
             font.setColor(Color.WHITE);
         }
     }
