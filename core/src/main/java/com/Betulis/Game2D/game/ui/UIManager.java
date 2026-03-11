@@ -50,6 +50,10 @@ public class UIManager {
     private Texture xpEmpty;
     private Texture fireballIcon;
     private Texture lightningIcon;
+    private Texture btnBag;
+    private Texture btnChar;
+    private Texture btnBook;
+    private Texture btnTal;
     private Map<String, Texture> equipTextures = new HashMap<>();
 
     private int screenW, screenH;
@@ -84,11 +88,11 @@ public class UIManager {
 
         // Panel menu — right-aligned at same y as spell bar, to the right of mouse bar
         float menuY = spellBar.getY();
-        panelMenu = new PanelMenuBar(0, menuY, whitePixel, input);
-        panelMenu.addButton("Bag",   InputBindings.Action.TOGGLE_BAG,       bag);
-        panelMenu.addButton("Char",  InputBindings.Action.TOGGLE_CHARACTER, character);
-        panelMenu.addButton("Book",  InputBindings.Action.TOGGLE_SPELLBOOK, spellBook);
-        panelMenu.addButton("Tal",   InputBindings.Action.TOGGLE_TALENT,    talents);
+        panelMenu = new PanelMenuBar(0, menuY, input);
+        panelMenu.addButton("Bag",  InputBindings.Action.TOGGLE_BAG,       bag,       btnBag);
+        panelMenu.addButton("Char", InputBindings.Action.TOGGLE_CHARACTER, character, btnChar);
+        panelMenu.addButton("Book", InputBindings.Action.TOGGLE_SPELLBOOK, spellBook, btnBook);
+        panelMenu.addButton("Tal",  InputBindings.Action.TOGGLE_TALENT,    talents,   btnTal);
         panelMenu.setRightEdge(screenW - 10f);
 
         // Wire drag listeners on spellbook drag-source slots
@@ -111,8 +115,12 @@ public class UIManager {
         slotBg        = loadUI("/assets/ui/slot.png");
         xpFull        = loadUI("ui/xp_full.png");
         xpEmpty       = loadUI("ui/xp_empty.png");
-        fireballIcon  = loadUI("ui/fireball_icon.png");
-        lightningIcon = loadUI("ui/lightning_icon.png");
+        fireballIcon  = loadUI("/assets/ui/fireball_icon.png");
+        lightningIcon = loadUI("/assets/ui/lightning_icon.png");
+        btnBag        = loadUI("/assets/ui/bag.png");
+        btnChar       = loadUI("/assets/ui/char.png");
+        btnBook       = loadUI("/assets/ui/spellbook.png");
+        btnTal        = loadUI("/assets/ui/talent.png");
 
         String[] equipNames = {
             "equip_head", "equip_shoulder", "equip_back", "equip_chest", "equip_wrist",
@@ -157,6 +165,10 @@ public class UIManager {
     }
 
     public void render(SpriteBatch batch) {
+        if (dragging != null && dragging.getIcon() != null) {
+            batch.setColor(Color.WHITE);
+            batch.draw(dragging.getIcon(), dragX - 18, dragY - 18, 36, 36);
+        }
         xpBar.render(batch, font);
         spellBar.render(batch, font);
         mouseSpellBar.render(batch, font);
@@ -166,10 +178,7 @@ public class UIManager {
         character.render(batch, font);
         talents.render(batch, font);
 
-        if (dragging != null && dragging.getIcon() != null) {
-            batch.setColor(Color.WHITE);
-            batch.draw(dragging.getIcon(), dragX - 18, dragY - 18, 36, 36);
-        }
+
     }
 
     public void handleMouseDown(float mx, float my) {

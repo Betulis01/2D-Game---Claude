@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SpellBarPanel extends UIWidget {
     private static final int SLOT_COUNT = 4;
-    public static final float SLOT_SIZE = 40f;
+    public static final float SLOT_SIZE = 32f;
     public static final float SLOT_GAP = 2f;
 
     private final SpellSlot[] slots = new SpellSlot[SLOT_COUNT];
@@ -29,7 +29,7 @@ public class SpellBarPanel extends UIWidget {
         this.w = SLOT_COUNT * SLOT_SIZE + (SLOT_COUNT - 1) * SLOT_GAP;
         this.h = SLOT_SIZE;
         this.x = screenW / 2f - w / 2f;
-        this.y = 15f;
+        this.y = 20f;
         this.visible = true;
 
         for (int i = 0; i < SLOT_COUNT; i++) {

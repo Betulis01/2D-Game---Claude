@@ -36,10 +36,10 @@ public final class InputBindings extends InputAdapter {
         keyBindings.put(Action.MOVE_DOWN,   Input.Keys.S);
 
         // Keyboard spell bar
-        keyBindings.put(Action.SPELL_1, Input.Keys.NUM_1);
-        keyBindings.put(Action.SPELL_2, Input.Keys.NUM_2);
-        keyBindings.put(Action.SPELL_3, Input.Keys.NUM_3);
-        keyBindings.put(Action.SPELL_4, Input.Keys.NUM_4);
+        keyBindings.put(Action.SPELL_1, Input.Keys.Q);
+        keyBindings.put(Action.SPELL_2, Input.Keys.E);
+        keyBindings.put(Action.SPELL_3, Input.Keys.R);
+        keyBindings.put(Action.SPELL_4, Input.Keys.T);
 
         // Mouse spell bar — LEFT = slot 0, RIGHT = slot 1wd
         mouseBindings.put(Action.MOUSE_SPELL_1, Input.Buttons.LEFT);

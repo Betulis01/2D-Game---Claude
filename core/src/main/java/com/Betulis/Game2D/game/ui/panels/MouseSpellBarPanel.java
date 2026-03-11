@@ -17,7 +17,7 @@ public class MouseSpellBarPanel extends UIWidget {
     private static final int SLOT_COUNT = 2;
     private static final float SLOT_SIZE = SpellBarPanel.SLOT_SIZE;
     private static final float SLOT_GAP = SpellBarPanel.SLOT_GAP;
-    private static final float BAR_GAP = 10f; // gap between this bar and the keyboard bar
+    private static final float BAR_GAP = 30f; // gap between this bar and the keyboard bar
 
     private final SpellSlot[] slots = new SpellSlot[SLOT_COUNT];
     private final SpellBar spellBarData;

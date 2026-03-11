@@ -21,18 +21,16 @@ public class PanelMenuBar extends UIWidget {
     private static final float BTN_H = 40f;
     private static final float BTN_GAP = 2f;
 
-    private static final Color BTN_NORMAL  = new Color(0.15f, 0.15f, 0.30f, 0.92f);
-    private static final Color BTN_HOVER   = new Color(0.25f, 0.25f, 0.50f, 0.95f);
-    private static final Color BTN_BORDER  = new Color(0.55f, 0.55f, 0.80f, 1f);
+    private static final Color HIGHLIGHT = new Color(0.6f, 0.8f, 1f, 1f);
 
     private final List<Entry> entries = new ArrayList<>();
-    private Texture pixel;
     private InputBindings input;
 
     private static class Entry {
         String label;
         InputBindings.Action boundAction;
         UIPanel target;
+        Texture tex;
         float x, y, w, h;
 
         boolean contains(float mx, float my) {
@@ -43,10 +41,8 @@ public class PanelMenuBar extends UIWidget {
     /**
      * @param rightEdgeX right edge of this bar (it grows leftward from here)
      * @param y          bottom y, matching the spell bar row
-     * @param pixel      white 1×1 texture for tinted rect drawing
      */
-    public PanelMenuBar(float rightEdgeX, float y, Texture pixel, InputBindings input) {
-        this.pixel = pixel;
+    public PanelMenuBar(float rightEdgeX, float y, InputBindings input) {
         this.input = input;
         this.y = y;
         this.h = BTN_H;
@@ -55,11 +51,12 @@ public class PanelMenuBar extends UIWidget {
     }
 
     /** Call this after construction for each panel button, left-to-right order. */
-    public void addButton(String label, InputBindings.Action action, UIPanel target) {
+    public void addButton(String label, InputBindings.Action action, UIPanel target, Texture tex) {
         Entry e = new Entry();
         e.label       = label;
         e.boundAction = action;
         e.target      = target;
+        e.tex         = tex;
         e.w = BTN_W;
         e.h = BTN_H;
         entries.add(e);
@@ -84,30 +81,19 @@ public class PanelMenuBar extends UIWidget {
 
     @Override
     public void render(SpriteBatch batch, BitmapFont font) {
-        if (!visible || pixel == null) return;
+        if (!visible) return;
 
         for (Entry e : entries) {
             boolean open = e.target != null && e.target.isVisible();
 
-            // Button background — brighter when panel is open
-            batch.setColor(open ? BTN_HOVER : BTN_NORMAL);
-            batch.draw(pixel, e.x, e.y, e.w, e.h);
-
-            // 1px border
-            batch.setColor(BTN_BORDER);
-            batch.draw(pixel, e.x,            e.y,            e.w, 1);
-            batch.draw(pixel, e.x,            e.y + e.h - 1,  e.w, 1);
-            batch.draw(pixel, e.x,            e.y,            1,   e.h);
-            batch.draw(pixel, e.x + e.w - 1,  e.y,            1,   e.h);
-
-            // Label centred
+            // Button background — highlighted when panel is open
+            batch.setColor(open ? HIGHLIGHT : Color.WHITE);
+            batch.draw(e.tex, e.x, e.y, e.w, e.h);
             batch.setColor(Color.WHITE);
-            font.setColor(Color.WHITE);
-            font.draw(batch, e.label, e.x + 4, e.y + 26);
 
             // Keybind hint bottom-right in yellow
-            font.setColor(Color.YELLOW);
-            font.draw(batch, input.getDisplayName(e.boundAction), e.x + e.w - 10, e.y + 10);
+            font.setColor(Color.DARK_GRAY);
+            font.draw(batch, input.getDisplayName(e.boundAction), e.x, e.y);
             font.setColor(Color.WHITE);
         }
     }

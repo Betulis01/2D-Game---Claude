@@ -1,13 +1,13 @@
 package com.Betulis.Game2D.game.ui.panels;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.Betulis.Game2D.game.ui.core.UIPanel;
 import com.Betulis.Game2D.game.ui.data.SpellDefinition;
 import com.Betulis.Game2D.game.ui.widgets.SpellSlot;
 import com.Betulis.Game2D.game.ui.widgets.UILabel;
 import com.badlogic.gdx.graphics.Texture;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SpellBookPanel extends UIPanel {
     private final List<SpellSlot> spellSlots = new ArrayList<>();
@@ -20,7 +20,7 @@ public class SpellBookPanel extends UIPanel {
         float labelY = slotY - 4f;
 
         // Fireball slot
-        SpellSlot fbSlot = new SpellSlot(startX, slotY, 40f, true, slotBg);
+        SpellSlot fbSlot = new SpellSlot(startX, slotY, 20f, true, slotBg);
         fbSlot.setSpell(fireball);
         spellSlots.add(fbSlot);
         add(fbSlot);
