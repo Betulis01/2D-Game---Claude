@@ -92,7 +92,11 @@ public abstract class Scene {
     }
 
     public void removeObject(GameObject obj) {
-        objects.removeValue(obj, true); 
+        objects.removeValue(obj, true);
+    }
+
+    public void removeOverlayObject(GameObject obj) {
+        overlayObjects.removeValue(obj, true);
     }
 
     /* APIs */
