@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "Bash(find \"C:\\\\Dev\\\\2D-Game---Claude\" -type f -name \"*UIManager*\" -o -name \"*UI*\" -type f | grep -E \"\\\\.\\(java|md\\)$\" | head -20)",
+      "Bash(find /c/Dev/2D-Game---Claude -type f \\\\\\( -name \"*.py\" -o -name \"*.java\" -o -name \"*.ps1\" -o -name \"*.bat\" -o -name \"*.sh\" \\\\\\) 2>/dev/null | grep -iE \"generate|asset\" | head -20)",
+      "Bash(ls \"C:\\\\Dev\\\\2D-Game---Claude\\\\assets\\\\items\\\\\" 2>/dev/null || echo \"items dir empty or missing\")",
+      "Bash(cd /c/Dev/2D-Game---Claude && ./gradlew :lwjgl3:classes 2>&1 | tail -10)",
+      "Bash(cd /c/Dev/2D-Game---Claude && ./gradlew :lwjgl3:classes 2>&1 | grep -E \"BUILD|ERROR|error:\" | head -20)",
+      "Bash(cd /c/Dev/2D-Game---Claude && ./gradlew :lwjgl3:classes 2>&1 | grep -E \"BUILD|FAILED|SUCCESS\")",
+      "Bash(cd /c/Dev/2D-Game---Claude && ./gradlew build 2>&1 | tail -5)",
+      "Bash(cd /c/Dev/2D-Game---Claude && ./gradlew build 2>&1; echo \"EXIT: $?\")",
+      "Bash(mkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/items\nmkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/components/items\nmkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/ui/widgets)"
     ]
   }
 }

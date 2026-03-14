@@ -115,4 +115,8 @@ public class Game extends ApplicationAdapter {
     public UIManager getUI() {
         return ui;
     }
+
+    public Scene getScene() {
+        return scene;
+    }
 }

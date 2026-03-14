@@ -5,6 +5,16 @@
 
 ---
 
+## 2026-03-14
+- Loot drop system → slime death (60%) spawns WorldItem on ground; player picks up with F key into bag
+- New: ItemDefinition, ItemConfig (JSON POJO), Inventory (4×4 model), LootDropper, WorldItem, WorldItemPrefab, ItemSlot
+- BagPanel → refactored from SpellSlot to ItemSlot grid; accepts Inventory; exposes refresh() + getItemSlots()
+- UIManager → owns Inventory; handles item drag (slot↔slot swap, drop-outside spawns WorldItemPrefab at player pos)
+- Assets.java + InputBindings (PICKUP_ITEM→F) + UIAssetGenerator (writePickupPrompt 24×24 "F" keycap) updated
+- Game.java → added getScene() getter for UIManager world-item spawning
+
+---
+
 ## 2026-03-11
 - PanelMenuBar → removed procedural pixel drawing; each button now uses its own PNG texture passed from UIManager
 - UIManager → added `btnBag/btnChar/btnBook/btnTal` textures loaded via `loadUI()` (safe fallback to whitePixel)

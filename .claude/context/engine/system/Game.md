@@ -24,6 +24,8 @@ dispose() → assets.dispose()
 ## Key Methods
 - `loadScene(Scene)` — swaps active scene (safe to call mid-frame; takes effect next frame)
 - `getAssets()` — returns shared Assets instance
+- `getScene()` — returns the currently active Scene
+- `getUI()` — returns the UIManager
 - `getScreenWidth/Height()` — used by camera and renderers
 - `getDeltaTime()` — returns current frame dt
 

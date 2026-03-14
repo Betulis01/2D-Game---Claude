@@ -17,6 +17,17 @@ public class UIAssetGenerator {
             writeEquipSlots();
             System.out.println("UIAssetGenerator: generated UI assets in local/ui/");
         }
+        if (!Gdx.files.local("ui/pickup_prompt.png").exists()) {
+            Gdx.files.local("ui/").mkdirs();
+            writePickupPrompt();
+        }
+    }
+
+    private static void writePickupPrompt() {
+        Pixmap p = filledWithBorder(24, 24, 0x1a1a2eff, 0x8888aaff, 2);
+        drawCenteredLabel(p, 24, 24, "F");
+        PixmapIO.writePNG(Gdx.files.local("ui/pickup_prompt.png"), p);
+        p.dispose();
     }
 
     private static void writeSlot() {

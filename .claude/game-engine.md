@@ -426,17 +426,68 @@ core/src/main/java/
     │   │                CombatState
     │   ├── collision/   Hitbox, Hurtbox, AttackOutsideMapDespawner
     │   ├── animation/   PlayerAnimation, SlimeAnimation
-    │   └── stats/       Health, HealthRenderer
+    │   ├── stats/       Health, HealthRenderer
+    │   └── items/       LootDropper, WorldItem
+    ├── items/           ItemDefinition, ItemConfig, Inventory
     ├── prefabs/         PlayerPrefab, SlimePrefab, AttackPrefabs,
-    │                    FireballExplosion, CameraPrefab
-    └── scenes/          DeathValley, (future scenes)
+    │                    FireballExplosion, CameraPrefab, WorldItemPrefab
+    ├── scenes/          DeathValley, (future scenes)
+    └── ui/
+        └── widgets/     SpellSlot, ItemSlot, UILabel
 ```
 
 Engine code (`engine/`) has **zero dependencies** on game code (`game/`). Game code depends on engine freely.
 
 ---
 
-## 21. Known Issues (Must Fix Before Extending)
+## 21. Item & Loot System
+
+### Data Layer
+- `ItemConfig` — POJO deserialized from `data/config/items/*.json` via LibGDX `Json`
+- `ItemDefinition` — runtime descriptor: name, icon `Texture`, `ItemType`, `ItemConfig`; immutable
+- `Inventory` — 4×4 flat array (`ItemDefinition[16]`); owned by `UIManager`
+
+### Loot Drop Flow
+```
+Slime dies → LootDropper.onDestroy()
+  roll < dropChance (0.6)
+    → WorldItemPrefab.create(x ± 20, y ± 20, itemDef)
+      → scene.addObject()
+```
+
+### Pickup Flow
+```
+WorldItem.update(): dist to player < 60px → showPrompt
+  F pressed → tryPickup()
+    → ui.getInventory().addItem(itemDef)
+    → ui.refreshBag()
+    → gameObject.destroy()
+```
+
+### Bag Drag-Drop Flow
+```
+ItemSlot.onMouseDown → UIManager.startItemDrag()
+  → clear inventory slot, store draggingItem
+
+Mouse released inside BagPanel → slot-to-slot swap (existing item goes to source slot)
+Mouse released outside BagPanel → UIManager.spawnWorldItemAtPlayer()
+```
+
+### Config Format (`data/config/items/*.json`)
+```json
+{ "name": "Small Sword", "itemLevel": 5, "slot": "WEAPON",
+  "damage": { "min": 5, "max": 8 }, "stats": { "strength": 2 } }
+```
+
+### Rules
+- `WorldItem` is self-contained — no item manager needed
+- Item icon texture is owned by `Assets`, never disposed by item classes
+- `promptTexture` (`ui/pickup_prompt.png`) loaded/disposed per `WorldItem` instance
+- Item drag and spell drag are tracked independently in `UIManager`
+
+---
+
+## 22. Known Issues (Must Fix Before Extending)
 
 | Issue | Location | Fix |
 |-------|----------|-----|
@@ -451,7 +502,7 @@ Engine code (`engine/`) has **zero dependencies** on game code (`game/`). Game c
 
 ---
 
-## 22. Design Principles (Always Apply)
+## 23. Design Principles (Always Apply)
 
 1. **Center-anchored everywhere** — transforms, bounds, rendering
 2. **Config-driven stats** — no magic numbers in Java

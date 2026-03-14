@@ -21,7 +21,8 @@ public final class InputBindings extends InputAdapter {
         MOVE_DOWN,
         SPELL_1, SPELL_2, SPELL_3, SPELL_4,
         MOUSE_SPELL_1, MOUSE_SPELL_2,
-        TOGGLE_BAG, TOGGLE_CHARACTER, TOGGLE_SPELLBOOK, TOGGLE_TALENT
+        TOGGLE_BAG, TOGGLE_CHARACTER, TOGGLE_SPELLBOOK, TOGGLE_TALENT,
+        PICKUP_ITEM
     }
 
     public InputBindings() {
@@ -44,6 +45,9 @@ public final class InputBindings extends InputAdapter {
         // Mouse spell bar — LEFT = slot 0, RIGHT = slot 1wd
         mouseBindings.put(Action.MOUSE_SPELL_1, Input.Buttons.LEFT);
         mouseBindings.put(Action.MOUSE_SPELL_2, Input.Buttons.RIGHT);
+
+        // Interaction
+        keyBindings.put(Action.PICKUP_ITEM, Input.Keys.F);
 
         // Panel toggles
         keyBindings.put(Action.TOGGLE_BAG,       Input.Keys.B);

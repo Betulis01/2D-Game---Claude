@@ -15,7 +15,15 @@
 - `dispose()` — disposes all textures and the manager
 
 ## Asset Paths
-All paths defined inside `Assets.java` — no path strings elsewhere in code.
+All paths defined as `public static final String` constants inside `Assets.java` — no path strings elsewhere in code.
+
+| Constant | Path |
+|----------|------|
+| `orc_sheet` | `player/orc8.png` |
+| `slime_sheet` | `mob/slime.png` |
+| `fireball_fly/explode/nohit` | `abilities/fireball/*.png` |
+| `lightning_bolt` | `abilities/lightning_bolt/lightning_bolt.png` |
+| `small_sword` | `items/weapons/small-sword.png` |
 
 ## Rules
 - `new Texture(...)` only allowed in Assets or TiledMapLoader — nowhere else

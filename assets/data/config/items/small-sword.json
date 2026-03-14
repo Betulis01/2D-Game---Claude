@@ -1,0 +1,14 @@
+{
+  "name": "Small Sword",
+  "itemLevel": 5,
+  "requiredLevel": 1,
+  "rarity": "Common",
+  "slot": "WEAPON",
+  "type": "One-Hand Sword",
+  "damage": { "min": 5, "max": 8 },
+  "speed": 1.8,
+  "stats": {
+    "strength": 2,
+    "agility": 1
+  }
+}

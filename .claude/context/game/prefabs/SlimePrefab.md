@@ -19,6 +19,7 @@
 | `CombatState` | Combat tracking |
 | `Hurtbox` | Receives damage |
 | `HealthRenderer` | World-space health bar |
+| `LootDropper` | 60% chance to drop small-sword on death |
 
 ## Speed Derivation
 ```

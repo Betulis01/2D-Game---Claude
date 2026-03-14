@@ -11,6 +11,8 @@ import com.Betulis.Game2D.engine.system.Transform;
 import com.Betulis.Game2D.engine.utils.SpriteSheetSlicer;
 import com.Betulis.Game2D.game.components.AABB.Hurtbox;
 import com.Betulis.Game2D.game.components.ai.SlimeAI;
+import com.Betulis.Game2D.game.components.items.LootDropper;
+import com.Betulis.Game2D.engine.utils.Assets;
 import com.Betulis.Game2D.game.components.animation.SlimeAnimation;
 import com.Betulis.Game2D.game.components.combat.CombatState;
 import com.Betulis.Game2D.game.components.movement.ChaseMovement;
@@ -58,6 +60,9 @@ public class SlimePrefab {
 
         //Hurtbox
         slimeObj.addComponent(new Hurtbox(cfg.hurtbox.width, cfg.hurtbox.height, cfg.hurtbox.offsetX, cfg.hurtbox.offsetY));
+
+        //Loot
+        slimeObj.addComponent(new LootDropper(Assets.small_sword, "data/config/items/small-sword.json", 0.6f));
 
         return slimeObj;
     }
