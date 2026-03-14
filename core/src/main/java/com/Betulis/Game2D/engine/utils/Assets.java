@@ -15,6 +15,7 @@ public class Assets {
     public static final String fireball_nohit = "abilities/fireball/fireball_nohit.png";
     public static final String lightning_bolt = "abilities/lightning_bolt/lightning_bolt.png";
     public static final String small_sword = "items/weapons/small-sword.png";
+    public static final String blue_ring   = "items/accessories/blue_ring.png";
 
     // Runtime-created 1x1 white texture
     private Texture pixelTex;
@@ -28,6 +29,7 @@ public class Assets {
         manager.load(fireball_nohit, Texture.class);
         manager.load(lightning_bolt, Texture.class);
         manager.load(small_sword, Texture.class);
+        manager.load(blue_ring,   Texture.class);
 
         manager.finishLoading();
 

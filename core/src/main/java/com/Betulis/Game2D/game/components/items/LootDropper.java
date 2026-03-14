@@ -27,7 +27,18 @@ public class LootDropper extends Component {
         Texture tex = getScene().getGame().getAssets().getTexture(texturePath);
         ItemConfig cfg = new Json().fromJson(ItemConfig.class, Gdx.files.internal(configPath));
         String name = (cfg != null && cfg.name != null) ? cfg.name : "Unknown Item";
-        itemDef = new ItemDefinition(name, tex, ItemDefinition.ItemType.WEAPON, cfg);
+        itemDef = new ItemDefinition(name, tex, itemTypeFromSlot(cfg != null ? cfg.slot : null), cfg);
+    }
+
+    private static ItemDefinition.ItemType itemTypeFromSlot(String slot) {
+        if (slot == null) return ItemDefinition.ItemType.ACCESSORY;
+        switch (slot.toUpperCase()) {
+            case "WEAPON":  return ItemDefinition.ItemType.WEAPON;
+            case "HEAD": case "SHOULDER": case "BACK": case "CHEST":
+            case "WRIST": case "HANDS": case "WAIST": case "LEGS": case "FEET":
+                return ItemDefinition.ItemType.ARMOR;
+            default:        return ItemDefinition.ItemType.ACCESSORY;
+        }
     }
 
     @Override

@@ -1,0 +1,13 @@
+{
+  "name": "Blue Ring",
+  "itemLevel": 3,
+  "requiredLevel": 1,
+  "rarity": "Common",
+  "slot": "RING",
+  "type": "Ring",
+  "stats": {
+    "strength": 0,
+    "agility": 1,
+    "stamina": 2
+  }
+}

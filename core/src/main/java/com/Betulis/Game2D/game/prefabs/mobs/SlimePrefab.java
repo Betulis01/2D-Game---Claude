@@ -66,7 +66,8 @@ public class SlimePrefab {
         slimeObj.addComponent(new XPReward(cfg.stats.xpReward));
 
         //Loot
-        slimeObj.addComponent(new LootDropper(Assets.small_sword, "data/config/items/small-sword.json", 0.6f));
+        slimeObj.addComponent(new LootDropper(Assets.small_sword, "data/config/items/small-sword.json", 0.4f));
+        slimeObj.addComponent(new LootDropper(Assets.blue_ring,   "data/config/items/blue-ring.json",   0.4f));
 
         return slimeObj;
     }
