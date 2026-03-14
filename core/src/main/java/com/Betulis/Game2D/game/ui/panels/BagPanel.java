@@ -15,8 +15,7 @@ public class BagPanel extends UIPanel {
 
     public BagPanel(float screenW, float screenH, Texture slotBg, Inventory inventory) {
         super("Bag",
-            screenW - 210f,
-            screenH - 220f,
+            screenW - 210f,220f,
             COLS * (SLOT_SIZE + SLOT_GAP) + 10f,
             ROWS * (SLOT_SIZE + SLOT_GAP) + 30f);
 

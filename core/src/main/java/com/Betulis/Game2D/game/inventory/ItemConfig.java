@@ -16,6 +16,6 @@ public class ItemConfig {
     }
 
     public static class Stats {
-        public int strength, agility;
+        public int strength, agility, stamina;
     }
 }

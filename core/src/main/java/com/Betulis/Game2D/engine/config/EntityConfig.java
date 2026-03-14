@@ -33,5 +33,6 @@ public class EntityConfig {
     public static class Stats {
         public float moveSpeed, maxHealth, attack, defense, attackSpeed, critChance, damage, cooldown, duration;
         public float xp, maxXp;
+        public int strength, agility, stamina;
     }
 }

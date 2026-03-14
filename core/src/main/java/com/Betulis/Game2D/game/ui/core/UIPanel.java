@@ -13,11 +13,7 @@ public class UIPanel extends UIWidget {
     protected String title;
     protected List<UIWidget> children = new ArrayList<>();
     protected Texture background;
-    protected Texture panelBg; // null = fall back to manual draw
-
-    private static final float TITLE_BAR_H = 18f;
-    private static final Color BG_COLOR = new Color(0.08f, 0.08f, 0.15f, 0.92f);
-    private static final Color TITLE_BG = new Color(0.15f, 0.15f, 0.3f, 1f);
+    protected Texture panelBg; 
 
     public UIPanel(String title, float x, float y, float w, float h) {
         this.title = title;
@@ -54,20 +50,11 @@ public class UIPanel extends UIWidget {
         if (panelBg != null) {
             batch.setColor(Color.WHITE);
             batch.draw(panelBg, x, y);
-        } else {
-            Texture pixel = getPanelPixel(batch);
-            if (pixel != null) {
-                batch.setColor(BG_COLOR);
-                batch.draw(pixel, x, y, w, h);
-                batch.setColor(TITLE_BG);
-                batch.draw(pixel, x, y + h - TITLE_BAR_H, w, TITLE_BAR_H);
-                batch.setColor(Color.WHITE);
-            }
-        }
+        } 
 
         // Title text
-        font.setColor(Color.WHITE);
-        font.draw(batch, title, x + 4, y + h - 4);
+        font.setColor(Color.ORANGE);
+        font.draw(batch, title, x + 4, y + h + 15);
 
         // Children
         for (UIWidget child : children) child.render(batch, font);
@@ -98,11 +85,6 @@ public class UIPanel extends UIWidget {
             if (child.onMouseUp(mx, my)) return true;
         }
         return contains(mx, my);
-    }
-
-    // Returns a white pixel texture from the first draw-call context — we'll inject it from UIManager
-    private Texture getPanelPixel(SpriteBatch batch) {
-        return panelPixel;
     }
 
     // Injected by UIManager after init

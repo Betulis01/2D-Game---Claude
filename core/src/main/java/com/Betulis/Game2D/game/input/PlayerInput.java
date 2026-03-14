@@ -36,8 +36,10 @@ public final class PlayerInput extends Component {
             }
         }
 
-        // Mouse spell bar (LMB / RMB) — only cast if UI is not handling a drag
-        if (!ui.isDragging()) {
+        // Mouse spell bar (LMB / RMB) — guard against UI hover AND drag
+        float uiMx = Gdx.input.getX();
+        float uiMy = Gdx.graphics.getHeight() - Gdx.input.getY();
+        if (!ui.isDragging() && !ui.isMouseOverUI(uiMx, uiMy)) {
             SpellBar mouseBar = ui.getMouseSpellBarData();
             InputBindings.Action[] mouseActions = {
                 InputBindings.Action.MOUSE_SPELL_1,

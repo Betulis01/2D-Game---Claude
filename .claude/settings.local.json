@@ -10,7 +10,10 @@
       "Bash(cd /c/Dev/2D-Game---Claude && ./gradlew :lwjgl3:classes 2>&1 | grep -E \"BUILD|FAILED|SUCCESS\")",
       "Bash(cd /c/Dev/2D-Game---Claude && ./gradlew build 2>&1 | tail -5)",
       "Bash(cd /c/Dev/2D-Game---Claude && ./gradlew build 2>&1; echo \"EXIT: $?\")",
-      "Bash(mkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/items\nmkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/components/items\nmkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/ui/widgets)"
+      "Bash(mkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/items\nmkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/components/items\nmkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/ui/widgets)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(./gradlew :core:compileJava 2>&1 | tail -50)"
     ]
   }
 }

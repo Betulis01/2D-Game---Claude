@@ -11,6 +11,9 @@
     "attackSpeed": 1.2,
     "critChance": 0.05,
     "xp": 0,
-    "maxXp": 1000
+    "maxXp": 1000,
+    "strength": 5,
+    "agility": 3,
+    "stamina": 4
   }
 }

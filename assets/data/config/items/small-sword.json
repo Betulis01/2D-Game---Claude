@@ -9,6 +9,7 @@
   "speed": 1.8,
   "stats": {
     "strength": 2,
-    "agility": 1
+    "agility": 1,
+    "stamina": 0
   }
 }

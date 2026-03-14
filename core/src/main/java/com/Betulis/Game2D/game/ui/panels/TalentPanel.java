@@ -12,12 +12,12 @@ public class TalentPanel extends UIPanel {
 
     public TalentPanel(float screenW, float screenH, Texture slotBg) {
         super("Talents",
-            screenW - 320f,
-            screenH / 2f - 200f,
+            screenW / 2f - 300f,
+            screenH / 2f,
             COLS * (SLOT_SIZE + SLOT_GAP) + 20f,
             ROWS * (SLOT_SIZE + SLOT_GAP) + 40f);
 
-        loadPanelBg("ui/panels/talent_panel.png");
+        loadPanelBg("assets/ui/panels/inventory_panel.png");
 
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {

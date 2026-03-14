@@ -3,12 +3,15 @@ package com.Betulis.Game2D.game.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.Betulis.Game2D.engine.config.ConfigLoader;
+import com.Betulis.Game2D.engine.config.EntityConfig;
 import com.Betulis.Game2D.engine.system.Game;
 import com.Betulis.Game2D.engine.system.GameObject;
 import com.Betulis.Game2D.engine.system.Scene;
 import com.Betulis.Game2D.game.components.movement.PlayerController;
 import com.Betulis.Game2D.game.components.stats.PlayerXP;
 import com.Betulis.Game2D.game.input.InputBindings;
+import com.Betulis.Game2D.game.inventory.Equipment;
 import com.Betulis.Game2D.game.inventory.Inventory;
 import com.Betulis.Game2D.game.inventory.ItemDefinition;
 import com.Betulis.Game2D.game.prefabs.items.WorldItemPrefab;
@@ -23,9 +26,11 @@ import com.Betulis.Game2D.game.ui.panels.SpellBarPanel;
 import com.Betulis.Game2D.game.ui.panels.SpellBookPanel;
 import com.Betulis.Game2D.game.ui.panels.TalentPanel;
 import com.Betulis.Game2D.game.ui.panels.XPBarPanel;
+import com.Betulis.Game2D.game.ui.widgets.EquipmentSlot;
 import com.Betulis.Game2D.game.ui.widgets.ItemSlot;
 import com.Betulis.Game2D.game.ui.widgets.SpellSlot;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -57,7 +62,13 @@ public class UIManager {
     private ItemDefinition draggingItem;
     private int draggingItemSlot = -1;
 
+    // Equipment drag
+    private ItemDefinition draggingEquipItem;
+    private EquipmentSlot  draggingFromEquipSlot;
+
     private Inventory inventory;
+    private Equipment equipment;
+    private PlayerStats playerStats;
 
     private Texture whitePixel;
     private Texture slotBg;
@@ -124,6 +135,18 @@ public class UIManager {
         for (ItemSlot slot : bag.getItemSlots()) {
             slot.setDragListener(itemDragListener);
         }
+
+        // Equipment + PlayerStats
+        equipment   = new Equipment();
+        playerStats = new PlayerStats();
+        EntityConfig playerCfg = new ConfigLoader().load("data/config/player.json");
+        playerStats.init(playerCfg.stats);
+        character.setPlayerStats(playerStats);
+
+        EquipmentSlot.DragListener equipDragListener = this::startEquipDrag;
+        for (EquipmentSlot slot : character.getEquipSlots()) {
+            slot.setDragListener(equipDragListener);
+        }
     }
 
     private Texture createWhitePixel() {
@@ -147,12 +170,12 @@ public class UIManager {
         btnTal        = loadUI("/assets/ui/talent.png");
 
         String[] equipNames = {
-            "equip_head", "equip_shoulder", "equip_back", "equip_chest", "equip_wrist",
-            "equip_hands", "equip_waist", "equip_legs", "equip_feet",
-            "equip_ring", "equip_trinket", "equip_weapon", "equip_relic"
+            "head_equip_icon", "shoulder_equip_icon", "back_equip_icon", "chest_equip_icon", "wrist_equip_icon",
+            "hands_equip_icon", "waist_equip_icon", "legs_equip_icon", "feet_equip_icon",
+            "ring_1_equip_icon", "ring_2_equip_icon", "trinket_equip_icon", "weapon_equip_icon", "relic_equip_icon"
         };
         for (String name : equipNames) {
-            equipTextures.put(name, loadUI("ui/" + name + ".png"));
+            equipTextures.put(name, loadUI("assets/ui/panels/icons/" + name + ".png"));
         }
     }
 
@@ -173,11 +196,14 @@ public class UIManager {
         dragX = Gdx.input.getX();
         dragY = screenH - Gdx.input.getY();
 
-        if (Gdx.input.isButtonJustPressed(com.badlogic.gdx.Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             handleMouseDown(dragX, dragY);
         }
-        boolean mouseReleased = !Gdx.input.isButtonPressed(com.badlogic.gdx.Input.Buttons.LEFT);
-        if (mouseReleased && (dragging != null || draggingItem != null)) {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
+            handleRightClick(dragX, dragY);
+        }
+        boolean mouseReleased = !Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+        if (mouseReleased && isDragging()) {
             handleMouseUp(dragX, dragY);
         }
 
@@ -205,6 +231,10 @@ public class UIManager {
         if (draggingItem != null && draggingItem.getIcon() != null) {
             batch.setColor(Color.WHITE);
             batch.draw(draggingItem.getIcon(), dragX - 16, dragY - 16, 32, 32);
+        }
+        if (draggingEquipItem != null && draggingEquipItem.getIcon() != null) {
+            batch.setColor(Color.WHITE);
+            batch.draw(draggingEquipItem.getIcon(), dragX - 16, dragY - 16, 32, 32);
         }
     }
 
@@ -253,9 +283,126 @@ public class UIManager {
             draggingItem = null;
             draggingItemSlot = -1;
         }
+
+        // Handle equipment drag drop
+        if (draggingEquipItem != null) {
+            boolean placed = false;
+            // Try compatible equip slot
+            if (character.isVisible()) {
+                for (EquipmentSlot es : character.getEquipSlots()) {
+                    if (es.contains(mx, my) && es.accepts(draggingEquipItem)) {
+                        ItemDefinition displaced = es.getItem();
+                        es.setItem(draggingEquipItem);
+                        equipment.equip(es.getSlotKey(), draggingEquipItem);
+                        if (displaced != null) {
+                            int free = inventory.findEmpty();
+                            if (free >= 0) inventory.setSlot(free, displaced);
+                        }
+                        placed = true;
+                        break;
+                    }
+                }
+            }
+            // Try bag slot
+            if (!placed && bag.isVisible()) {
+                for (ItemSlot slot : bag.getItemSlots()) {
+                    if (slot.contains(mx, my)) {
+                        ItemDefinition existing = inventory.getSlot(slot.getSlotIndex());
+                        inventory.setSlot(slot.getSlotIndex(), draggingEquipItem);
+                        if (existing != null) {
+                            // displaced existing — simplification: it's lost if no room
+                        }
+                        placed = true;
+                        break;
+                    }
+                }
+            }
+            if (!placed) spawnWorldItemAtPlayer(draggingEquipItem);
+            bag.refresh(inventory);
+            playerStats.recalculate(equipment);
+            draggingEquipItem     = null;
+            draggingFromEquipSlot = null;
+        }
     }
 
-    public boolean isDragging() { return dragging != null || draggingItem != null; }
+    private void handleRightClick(float mx, float my) {
+        // RMB on bag slot → auto-equip item
+        if (bag.isVisible() && bag.contains(mx, my)) {
+            for (ItemSlot slot : bag.getItemSlots()) {
+                if (slot.contains(mx, my) && slot.getItem() != null) {
+                    autoEquip(slot.getItem(), slot.getSlotIndex());
+                    return;
+                }
+            }
+        }
+        // RMB on equipment slot → auto-unequip
+        if (character.isVisible() && character.contains(mx, my)) {
+            for (EquipmentSlot slot : character.getEquipSlots()) {
+                if (slot.contains(mx, my) && slot.getItem() != null) {
+                    autoUnequip(slot);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void autoEquip(ItemDefinition item, int bagSlotIndex) {
+        // Try first compatible empty slot
+        for (EquipmentSlot es : character.getEquipSlots()) {
+            if (es.accepts(item) && es.getItem() == null) {
+                es.setItem(item);
+                equipment.equip(es.getSlotKey(), item);
+                inventory.clearSlot(bagSlotIndex);
+                bag.refresh(inventory);
+                playerStats.recalculate(equipment);
+                return;
+            }
+        }
+        // Swap with first compatible occupied slot
+        for (EquipmentSlot es : character.getEquipSlots()) {
+            if (es.accepts(item)) {
+                ItemDefinition old = es.getItem();
+                es.setItem(item);
+                equipment.equip(es.getSlotKey(), item);
+                inventory.setSlot(bagSlotIndex, old);
+                bag.refresh(inventory);
+                playerStats.recalculate(equipment);
+                return;
+            }
+        }
+    }
+
+    private void autoUnequip(EquipmentSlot es) {
+        int free = inventory.findEmpty();
+        if (free < 0) return; // bag full
+        inventory.setSlot(free, es.getItem());
+        equipment.unequip(es.getSlotKey());
+        es.setItem(null);
+        bag.refresh(inventory);
+        playerStats.recalculate(equipment);
+    }
+
+    private void startEquipDrag(ItemDefinition item, EquipmentSlot source) {
+        draggingEquipItem     = item;
+        draggingFromEquipSlot = source;
+        equipment.unequip(source.getSlotKey());
+        playerStats.recalculate(equipment);
+    }
+
+    public boolean isDragging() {
+        return dragging != null || draggingItem != null || draggingEquipItem != null;
+    }
+
+    public boolean isMouseOverUI(float mx, float my) {
+        if (panelMenu.isVisible()  && panelMenu.contains(mx, my))  return true;
+        if (spellBook.isVisible()  && spellBook.contains(mx, my))  return true;
+        if (bag.isVisible()        && bag.contains(mx, my))        return true;
+        if (character.isVisible()  && character.contains(mx, my))  return true;
+        if (talents.isVisible()    && talents.contains(mx, my))    return true;
+        if (mouseSpellBar.contains(mx, my))                        return true;
+        if (spellBar.contains(mx, my))                             return true;
+        return false;
+    }
 
     private void startDrag(SpellDefinition spell, SpellSlot source) {
         this.dragging = spell;
