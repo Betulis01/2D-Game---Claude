@@ -293,7 +293,36 @@ public class UIManager {
                 }
                 bag.refresh(inventory);
             } else {
-                spawnWorldItemAtPlayer(draggingItem);
+                // Try dropping onto a compatible equipment slot
+                boolean equipped = false;
+                boolean hitEquipSlot = false;
+                if (character.isVisible()) {
+                    for (EquipmentSlot es : character.getEquipSlots()) {
+                        if (es.contains(mx, my)) {
+                            hitEquipSlot = true;
+                            if (es.accepts(draggingItem)) {
+                                ItemDefinition displaced = es.getItem();
+                                es.setItem(draggingItem);
+                                equipment.equip(es.getSlotKey(), draggingItem);
+                                if (displaced != null && draggingItemSlot >= 0) {
+                                    inventory.setSlot(draggingItemSlot, displaced);
+                                }
+                                playerStats.recalculate(equipment);
+                                equipped = true;
+                            }
+                            break;
+                        }
+                    }
+                }
+                if (!equipped) {
+                    if (hitEquipSlot && draggingItemSlot >= 0) {
+                        // Rejected by slot — return to original bag slot
+                        inventory.setSlot(draggingItemSlot, draggingItem);
+                    } else {
+                        // Dropped in open space — spawn at player
+                        spawnWorldItemAtPlayer(draggingItem);
+                    }
+                }
                 bag.refresh(inventory);
             }
             draggingItem = null;
@@ -303,21 +332,32 @@ public class UIManager {
         // Handle equipment drag drop
         if (draggingEquipItem != null) {
             boolean placed = false;
+            boolean rejectedByEquipSlot = false;
             // Try compatible equip slot
             if (character.isVisible()) {
                 for (EquipmentSlot es : character.getEquipSlots()) {
-                    if (es.contains(mx, my) && es.accepts(draggingEquipItem)) {
-                        ItemDefinition displaced = es.getItem();
-                        es.setItem(draggingEquipItem);
-                        equipment.equip(es.getSlotKey(), draggingEquipItem);
-                        if (displaced != null) {
-                            int free = inventory.findEmpty();
-                            if (free >= 0) inventory.setSlot(free, displaced);
+                    if (es.contains(mx, my)) {
+                        if (es.accepts(draggingEquipItem)) {
+                            ItemDefinition displaced = es.getItem();
+                            es.setItem(draggingEquipItem);
+                            equipment.equip(es.getSlotKey(), draggingEquipItem);
+                            if (displaced != null) {
+                                int free = inventory.findEmpty();
+                                if (free >= 0) inventory.setSlot(free, displaced);
+                            }
+                            placed = true;
+                        } else {
+                            rejectedByEquipSlot = true;
                         }
-                        placed = true;
                         break;
-                    } 
+                    }
                 }
+            }
+            // Return to source equip slot if rejected
+            if (rejectedByEquipSlot && draggingFromEquipSlot != null) {
+                draggingFromEquipSlot.setItem(draggingEquipItem);
+                equipment.equip(draggingFromEquipSlot.getSlotKey(), draggingEquipItem);
+                placed = true;
             }
             // Try bag slot
             if (!placed && bag.isVisible()) {
