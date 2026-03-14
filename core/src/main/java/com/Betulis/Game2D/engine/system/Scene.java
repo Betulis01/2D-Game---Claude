@@ -12,6 +12,7 @@ public abstract class Scene {
     protected TiledMap map;
     protected AABB mapBounds;
     protected SnapshotArray<GameObject> objects;
+    protected SnapshotArray<GameObject> overlayObjects;
     protected Game game;
     protected Camera camera;
 
@@ -30,16 +31,17 @@ public abstract class Scene {
     public void load(Game game) {
         this.game = game;
         objects = new SnapshotArray<>(GameObject.class);
+        overlayObjects = new SnapshotArray<>(GameObject.class);
         onLoad();
     }
     protected abstract void onLoad();
 
     /* UNLOAD */
     public void unload() {
-        for (GameObject obj : objects) {
-            obj.destroy();
-        }
+        for (GameObject obj : objects)        obj.destroy();
+        for (GameObject obj : overlayObjects) obj.destroy();
         objects.clear();
+        overlayObjects.clear();
     }
 
     /* RENDER AND UPDATE */
@@ -50,6 +52,13 @@ public abstract class Scene {
             items[i].update(dt);
         }
         objects.end(); // Commit any additions/removals that happened during the loop
+
+        GameObject[] ov = overlayObjects.begin();
+        int on = overlayObjects.size;
+        for (int i = 0; i < on; i++) {
+            ov[i].update(dt);
+        }
+        overlayObjects.end();
     }
 
     public void render(SpriteBatch batch) {
@@ -62,10 +71,24 @@ public abstract class Scene {
         objects.end();
     }
 
+    public void renderOverlay(SpriteBatch batch) {
+        GameObject[] items = overlayObjects.begin();
+        int n = overlayObjects.size;
+        for (int i = 0; i < n; i++) {
+            items[i].render(batch);
+        }
+        overlayObjects.end();
+    }
+
     /* ADD AND REMOVE */
     public void addObject(GameObject obj) {
         obj.setScene(this);
         objects.add(obj);
+    }
+
+    public void addOverlayObject(GameObject obj) {
+        obj.setScene(this);
+        overlayObjects.add(obj);
     }
 
     public void removeObject(GameObject obj) {

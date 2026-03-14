@@ -127,7 +127,7 @@ public class UIManager {
             if (playerTransform != null) {
                 float px = playerTransform.getWorldX();
                 float py = playerTransform.getWorldY();
-                game.getScene().addObject(FloatingTextPrefab.create(px, py + 40f, "Level Up!", Color.GOLD, 2.0f));
+                game.getScene().addOverlayObject(FloatingTextPrefab.create(px, py + 40f, "Level Up!", Color.GOLD, 2.0f));
             }
         });
 

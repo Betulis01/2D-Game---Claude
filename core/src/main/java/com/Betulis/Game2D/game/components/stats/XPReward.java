@@ -22,7 +22,7 @@ public class XPReward extends Component {
 
         health.setDeathListener((dx, dy, scene) -> {
             if (playerXP != null) playerXP.addXP(amount);
-            scene.addObject(FloatingTextPrefab.create(dx, dy + 10f, "+" + (int) amount + " XP", XP_COLOR, 1.2f));
+            scene.addOverlayObject(FloatingTextPrefab.create(dx, dy + 10f, "+" + (int) amount + " XP", XP_COLOR, 1.2f));
         });
     }
 

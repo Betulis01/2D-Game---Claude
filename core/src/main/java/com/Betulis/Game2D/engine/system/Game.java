@@ -76,8 +76,9 @@ public class Game extends ApplicationAdapter {
         ui.update(dt);    //ui update
 
         batch.begin();
-        scene.render(batch); //render
-        ui.render(batch);    //ui render
+        scene.render(batch);        //render
+        scene.renderOverlay(batch); //overlay (floating text, etc.)
+        ui.render(batch);           //ui render
         debugRender.render(scene, batch);
         batch.end();
     }
