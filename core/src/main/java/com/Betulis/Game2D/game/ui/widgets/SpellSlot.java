@@ -65,7 +65,7 @@ public class SpellSlot extends UIWidget {
             String label = inputBindings.getDisplayName(boundAction);
             if (label != null) {
                 font.setColor(Color.DARK_GRAY);
-                font.draw(batch, label, x, y);
+                font.draw(batch, label, x + label.length(), y);
                 font.setColor(Color.WHITE);
             }
         }

@@ -10,7 +10,7 @@ public class FloatingText extends Component {
     private final String text;
     private final Color  color;
     private final float  duration;
-    private final float  riseSpeed = 30f;
+    private final float  riseSpeed = 20f;
     private float elapsed = 0f;
     private BitmapFont font;
 

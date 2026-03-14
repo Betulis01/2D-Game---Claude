@@ -53,7 +53,7 @@ public class DamageOnHit extends Component {
         //Floating damage text
         float tx = target.getTransform().getWorldX();
         float ty = target.getTransform().getWorldY() + 16f;
-        getScene().addObject(FloatingTextPrefab.create(tx, ty, "-" + (int) dmg, Color.RED, 1.0f));
+        getScene().addObject(FloatingTextPrefab.create(tx, ty, "-" + (int) dmg, Color.RED, 1.5f));
 
         //Animation
         spawnExplosion(target);
