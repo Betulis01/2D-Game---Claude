@@ -2,14 +2,14 @@
 
 **File:** `core/src/main/java/com/Betulis/Game2D/game/ui/UIManager.java`
 **Extends/Type:** Plain class (no base)
-**Role:** Central coordinator for all HUD panels — owns textures, inventory model, constructs panels, routes input, drives update/render, and handles both spell and item drag-drop.
+**Role:** Central coordinator for all HUD panels — owns textures, inventory/equipment models, constructs panels, routes input, drives update/render, and handles spell/item/equipment drag-drop.
 
 ## Fields
 | Field | Type | Purpose |
 |-------|------|---------|
 | `font` | `BitmapFont` | Shared font passed to all panels |
 | `input` | `InputBindings` | Keybind state |
-| `game` | `Game` | Stored for scene access (world item spawning) |
+| `game` | `Game` | Stored for scene access |
 | `spellBar` | `SpellBarPanel` | Bottom-center spell hotbar |
 | `mouseSpellBar` | `MouseSpellBarPanel` | Mouse-button spell bar |
 | `panelMenu` | `PanelMenuBar` | Row of panel-toggle buttons |
@@ -18,48 +18,62 @@
 | `character` | `CharacterPanel` | Character/equipment panel |
 | `xpBar` | `XPBarPanel` | XP bar |
 | `talents` | `TalentPanel` | Talent tree panel |
-| `spellBarData` / `mouseSpellBarData` | `SpellBar` | Spell slot data models |
-| `dragging` | `SpellDefinition` | Spell being dragged (null = not dragging) |
-| `draggingItem` | `ItemDefinition` | Item being dragged from bag (null = not dragging) |
-| `draggingItemSlot` | `int` | Source slot index of dragged item (-1 = none) |
-| `dragX/Y` | `float` | Current drag icon position |
+| `playerXP` | `PlayerXP` | Stored for level-up callback setup |
+| `playerStats` | `PlayerStats` | Recalculated on equip/unequip/level-up |
+| `equipment` | `Equipment` | Current equipped items model |
 | `inventory` | `Inventory` | 4×4 backing model for BagPanel |
-| `whitePixel` | `Texture` | 1×1 white fallback texture |
-| `slotBg` | `Texture` | Slot background PNG |
-| `xpFull/xpEmpty` | `Texture` | XP bar fill/empty PNGs |
-| `fireballIcon` / `lightningIcon` | `Texture` | Spell icon PNGs |
-| `btnBag/btnChar/btnBook/btnTal` | `Texture` | Panel button face PNGs (fallback to whitePixel) |
-| `equipTextures` | `Map<String,Texture>` | Keyed by slot name (e.g. `equip_head`) |
-| `screenW/H` | `int` | Screen dimensions |
+| `dragging` | `SpellDefinition` | Spell being dragged |
+| `draggingItem` | `ItemDefinition` | Bag item being dragged |
+| `draggingItemSlot` | `int` | Source bag slot index (-1 = none) |
+| `draggingEquipItem` | `ItemDefinition` | Equipment item being dragged |
+| `draggingFromEquipSlot` | `EquipmentSlot` | Source equip slot for dragged equip item |
+| `dragX/Y` | `float` | Current drag icon screen position |
 
-## Key Methods / Logic
-- **`init(Game, PlayerXP)`** — creates `whitePixel`, loads textures, constructs all panels (including `Inventory`), wires spell and item drag listeners.
-- **`loadTextures()`** — loads all PNGs via `loadUI()`.
-- **`loadUI(String path)`** — returns texture from `Gdx.files.local(path)` or `whitePixel` if missing.
-- **`update(float dt)`** — polls keybind toggles, tracks drag position, fires `handleMouseDown/Up` on button events.
-- **`render(SpriteBatch)`** — renders all panels then drag-icon overlays (spell and item separately).
-- **`handleMouseDown/Up`** — routes spell drag to spell bar, item drag to bag slots or world spawn.
-- **`startItemDrag(item, slotIndex)`** — clears inventory slot, stores dragging state, refreshes bag visual.
-- **`spawnWorldItemAtPlayer(item)`** — scans scene for `PlayerController`, spawns `WorldItemPrefab` near player.
-- **`getInventory()`** — returns the Inventory model (used by `WorldItem.tryPickup()`).
-- **`refreshBag()`** — calls `bag.refresh(inventory)` (called after pickup or drag completion).
+## Key Methods
+- **`init(Game, PlayerXP)`** — constructs all panels, wires listeners, captures player transform for level-up callback, sets `playerXP.setOnLevelUp()`
+- **`findPlayerTransform()`** — scans scene once at init time; result stored in lambda closure (no runtime scan)
+- **`update(float dt)`** — polls keybind toggles, tracks drag position, fires `handleMouseDown/Up`
+- **`render(SpriteBatch)`** — renders all panels then drag-icon overlays
+- **`handleMouseUp()`** — routes spell/item/equip drag completion
+- **`autoEquip(item, bagSlotIndex)`** — RMB from bag → first compatible empty equip slot, or swap with first compatible occupied slot
+- **`autoUnequip(EquipmentSlot)`** — RMB from equip slot → first empty bag slot
+- **`spawnWorldItemAtPlayer(item)`** — spawns WorldItemPrefab near player position
 
-## Item Drag Flow
+## Item Drag Flow (Bag → Anywhere)
 ```
 mouseDown on filled ItemSlot → startItemDrag() → clear slot + store draggingItem
-  mouseUp inside BagPanel → slot-to-slot swap (with existing item going to source slot)
-  mouseUp outside BagPanel → spawnWorldItemAtPlayer() → bag.refresh()
+  mouseUp inside BagPanel → slot-to-slot swap
+  mouseUp on compatible EquipSlot → equip; displaced item returns to source bag slot
+  mouseUp on incompatible EquipSlot → item returns to original bag slot
+  mouseUp in open space → spawnWorldItemAtPlayer()
 ```
+
+## Equipment Drag Flow (EquipSlot → Anywhere)
+```
+mouseDown on EquipSlot with item → startEquipDrag() → unequip + store draggingEquipItem
+  mouseUp on compatible EquipSlot → equip; displaced goes to bag
+  mouseUp on incompatible EquipSlot → item returns to source EquipSlot (re-equipped)
+  mouseUp on BagSlot → placed in bag
+  mouseUp in open space → spawnWorldItemAtPlayer()
+```
+
+## Level-Up Callback
+Set in `init()`:
+```java
+playerXP.setOnLevelUp(() -> {
+    playerStats.levelUp();
+    scene.addObject(FloatingTextPrefab.create(px, py + 40f, "Level Up!", Color.GOLD, 2.0f));
+});
+```
+Player transform captured once via `findPlayerTransform()` — NOT inside the callback — to avoid nested iterator crash.
 
 ## Dependencies
 - All panel classes in `game.ui.panels`, `game.ui.widgets`
-- `InputBindings`, `PlayerXP`, `Game`
-- `SpellBar`, `SpellDefinition`, `SpellSlot`
-- `Inventory`, `ItemDefinition`, `WorldItemPrefab`, `PlayerController`
+- `InputBindings`, `PlayerXP`, `PlayerStats`, `Equipment`, `Game`
+- `Inventory`, `ItemDefinition`, `WorldItemPrefab`, `PlayerController`, `FloatingTextPrefab`
 
 ## Rules
-- `UIPanel.panelPixel` is set to `whitePixel` immediately after creation — all panels share this reference.
-- Panel construction order in `init()` determines Z-order in `render()`.
-- `loadUI()` must never throw — missing assets get `whitePixel` silently.
-- Button texture filenames for PanelMenuBar: `bag.png`, `char.png`, `spellbook.png`, `talent.png` (under `/assets/ui/`).
-- Item drag and spell drag are independent systems tracked with separate fields.
+- `UIPanel.panelPixel` set to `whitePixel` immediately after creation — all panels share this reference
+- `loadUI()` must never throw — missing assets get `whitePixel` silently
+- `findPlayerTransform()` called once at init, not in callbacks — avoids nested iterator crash during level-up
+- `playerStats.recalculate(equipment)` called after every equip/unequip operation

@@ -6,6 +6,15 @@
 ---
 
 ## 2026-03-14
+- XP/level loop wired: slime death awards 2 XP, bar pulses dark-purple, level-up shows gold "Level Up!" text + stats +2
+- New: FloatingText (rise+fade component), FloatingTextPrefab, XPReward (self-wiring death listener), PlayerXP leveling
+- Health: DeathListener interface added; fires before destroy() with world pos + scene ref
+- DamageOnHit: spawns red "-X" floating text on hit
+- XPReward refactored → self-registers death listener in start(), caches PlayerXP to avoid nested iterator crash
+- UIManager: onLevelUp callback captures player Transform at init (not in callback) to avoid 3rd nested for-each crash
+- UIManager item drag: bag→equip slot equips if accepted; bag→incompatible equip slot returns to original bag slot
+- UIManager equip drag: drag to incompatible slot returns item to source equip slot instead of spawning at player
+- LootDropper: ItemType now derived from cfg.slot (not hardcoded WEAPON); blue_ring added (RING, +2 STA +1 AGI, 40%)
 - PNG-backed UIPanel backgrounds → panels render dedicated .png at 1:1 instead of manual pixel+tint draw
 - UIPanel.onMouseUp() → fixed to return contains(mx,my) instead of false (clicks no longer leak through open panels)
 - UIPanel → added loadPanelBg(path): loads PNG, updates w/h to match pixel dimensions; panelBg field + Gdx import

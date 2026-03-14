@@ -7,16 +7,16 @@
 | Field | Type | Purpose |
 |-------|------|---------|
 | `manager` | `AssetManager` | LibGDX asset manager |
-| `whitePixel` | `Texture` | 1×1 white texture for rectangles/bars |
+| `pixelTex` | `Texture` | 1×1 white texture backing |
+| `pixelRegion` | `TextureRegion` | Region wrapping pixelTex for SpriteBatch drawing |
 
 ## Key Methods
-- `load()` — queues all assets for loading, blocks until complete
+- `load()` — queues all assets, blocks until complete, then creates pixelTex
 - `getTexture(String path)` — returns loaded Texture by asset path
-- `dispose()` — disposes all textures and the manager
+- `getPixel()` — returns 1×1 white TextureRegion for colored rectangle drawing
+- `dispose()` — disposes manager and pixelTex
 
-## Asset Paths
-All paths defined as `public static final String` constants inside `Assets.java` — no path strings elsewhere in code.
-
+## Asset Path Constants
 | Constant | Path |
 |----------|------|
 | `orc_sheet` | `player/orc8.png` |
@@ -24,8 +24,9 @@ All paths defined as `public static final String` constants inside `Assets.java`
 | `fireball_fly/explode/nohit` | `abilities/fireball/*.png` |
 | `lightning_bolt` | `abilities/lightning_bolt/lightning_bolt.png` |
 | `small_sword` | `items/weapons/small-sword.png` |
+| `blue_ring` | `items/accessories/blue_ring.png` |
 
 ## Rules
+- All asset paths defined as `public static final String` constants — no path strings elsewhere in code
 - `new Texture(...)` only allowed in Assets or TiledMapLoader — nowhere else
-- `whitePixel` used by DebugRender and HealthRenderer for colored rectangle drawing
-- `dispose()` called once on application exit by `Game.dispose()`
+- `load()` must be called after OpenGL context is available (after app start)

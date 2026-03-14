@@ -2,18 +2,17 @@
 
 **File:** `core/.../game/components/combat/DamageOnHit.java`
 **Extends:** `Component`
-**Role:** On each frame, checks if this entity's Hitbox overlaps any Hurtbox in the scene. On hit: applies damage, notifies mob AI, spawns hit effect, destroys self.
+**Role:** On each frame, checks if this entity's Hitbox overlaps any Hurtbox in the scene. On hit: applies damage, spawns red floating damage text, notifies mob AI, spawns hit effect, destroys self.
 
 ## Update Logic
 ```
-for each GameObject in scene:
+for each GameObject in scene (index-based, no nested iterator):
   if target == owner: skip
   hurtbox = target.getComponent(Hurtbox.class)
   if hurtbox == null: skip
   if this.hitbox.worldBounds.intersects(hurtbox.worldBounds):
     target.Health.applyDamage(damage)
     onHit(target)
-    return
 ```
 
 ## onHit()
@@ -22,7 +21,9 @@ owner.CombatState.enterCombat()
 target.CombatState.enterCombat()
 
 SlimeAI ai = target.getComponent(SlimeAI.class)
-if ai != null: ai.aggro(owner.getTransform())   // notify mob AI
+if ai != null: ai.aggro(owner.getTransform())
+
+FloatingTextPrefab.create(tx, ty + 16f, "-dmg", Color.RED, 1.5f) → scene.addObject()
 
 spawnExplosion(target)   // parents FireballExplosion to target transform
 gameObject.destroy()
@@ -31,8 +32,8 @@ gameObject.destroy()
 ## Fields
 | Field | Type | Purpose |
 |-------|------|---------|
-| `owner` | `GameObject` | The entity that fired this attack (used for aggro source and faction skip) |
-| `dmg` | `float` | Flat damage value from EntityConfig |
+| `owner` | `GameObject` | The entity that fired this attack |
+| `dmg` | `float` | Flat damage value |
 
 ## Dependencies
 - `Hitbox` (sibling) — source bounds
@@ -41,6 +42,7 @@ gameObject.destroy()
 - `CombatState` (on both) — flags combat
 - `SlimeAI` (on victim, optional) — aggro notification
 - `FireballExplosion` prefab — spawns hit effect
+- `FloatingTextPrefab` — spawns red damage number
 
 ## Rules
 - Destroy self after first hit — attacks do not pierce by default

@@ -1,25 +1,26 @@
 # SlimePrefab
 
 **File:** `core/.../game/prefabs/mobs/SlimePrefab.java`
-**Role:** Factory that constructs a slime enemy GameObject with Reynolds wander AI and aggro-chase behaviour.
+**Role:** Factory that constructs a slime enemy GameObject with Reynolds wander AI, aggro-chase behaviour, XP reward, and two loot drop rolls.
 
 ## Produced GameObject: "Slime"
 | Component | Purpose |
 |-----------|---------|
 | `Transform` | Position |
 | `WanderMovement` | Reynolds circle-ahead wander (speed = moveSpeed × 0.8) |
-| `ChaseMovement` | Direct pursuit (speed = moveSpeed × 1.2, range = spriteWidth × 10) |
+| `ChaseMovement` | Direct pursuit (speed = moveSpeed × 1.2) |
 | `EntityMover` | Active movement → position |
 | `SlimeAI` | State machine: wander ↔ chase transitions |
 | `AnimationDirector` | Clip registry |
 | `AnimationUpdater` | Frame timer |
 | `SpriteRenderer` | Draws current frame |
-| `SlimeAnimation` | moving/idle → clip switch (reads EntityMover) |
+| `SlimeAnimation` | moving/idle → clip switch |
 | `Health` | HP from EntityConfig |
+| `HealthRenderer` | World-space health bar |
 | `CombatState` | Combat tracking |
 | `Hurtbox` | Receives damage |
-| `HealthRenderer` | World-space health bar |
-| `LootDropper` | 60% chance to drop small-sword on death |
+| `XPReward` | Self-wires death listener; awards XP + spawns floating text |
+| `LootDropper` (×2) | 40% small-sword, 40% blue-ring — independent rolls |
 
 ## Speed Derivation
 ```
@@ -27,15 +28,15 @@ wanderSpeed = cfg.stats.moveSpeed * 0.8
 chaseSpeed  = cfg.stats.moveSpeed * 1.2
 ```
 
-## Animation Clips Registered
+## Animation Clips
 - `jump` (looping) — played while moving
 - `idle` (looping) — played while stationary
 
 ## Rules
 - All stats and dimensions from `EntityConfig` (slime.json)
-- `SpriteSheetSlicer` uses `cfg.sprite.frames` and `cfg.sprite.directions` — no hardcoded sheet layout
-- `frameDuration` from `cfg.sprite.frameDuration`
-- Wander and chase speeds are derived from `moveSpeed` — only one speed value in JSON
+- `xpReward` read from `cfg.stats.xpReward` — must exist in slime.json
+- No scene wiring needed — `XPReward.start()` self-registers the death listener
+- Adding a new mob: copy pattern, add `XPReward(cfg.stats.xpReward)` and one or more `LootDropper`s
 
 ## Known Issues
 - Sprite sheet uses 1 direction row — no directional slime animation

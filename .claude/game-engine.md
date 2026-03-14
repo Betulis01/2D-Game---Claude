@@ -426,14 +426,18 @@ core/src/main/java/
     │   │                CombatState
     │   ├── collision/   Hitbox, Hurtbox, AttackOutsideMapDespawner
     │   ├── animation/   PlayerAnimation, SlimeAnimation
-    │   ├── stats/       Health, HealthRenderer
-    │   └── items/       LootDropper, WorldItem
+    │   ├── stats/       Health, HealthRenderer, PlayerXP, XPReward
+    │   ├── items/       LootDropper, WorldItem
+    │   └── (root)       FloatingText
     ├── items/           ItemDefinition, ItemConfig, Inventory
     ├── prefabs/         PlayerPrefab, SlimePrefab, AttackPrefabs,
-    │                    FireballExplosion, CameraPrefab, WorldItemPrefab
+    │                    FireballExplosion, CameraPrefab, WorldItemPrefab,
+    │                    FloatingTextPrefab
     ├── scenes/          DeathValley, (future scenes)
     └── ui/
-        └── widgets/     SpellSlot, ItemSlot, UILabel
+        ├── widgets/     SpellSlot, ItemSlot, UILabel, EquipmentSlot
+        └── panels/      XPBarPanel, CharacterPanel, BagPanel, SpellBookPanel,
+                         TalentPanel, SpellBarPanel, MouseSpellBarPanel, PanelMenuBar
 ```
 
 Engine code (`engine/`) has **zero dependencies** on game code (`game/`). Game code depends on engine freely.
@@ -466,11 +470,22 @@ WorldItem.update(): dist to player < 60px → showPrompt
 
 ### Bag Drag-Drop Flow
 ```
-ItemSlot.onMouseDown → UIManager.startItemDrag()
-  → clear inventory slot, store draggingItem
+ItemSlot.onMouseDown → UIManager.startItemDrag() → clear slot, store draggingItem
 
-Mouse released inside BagPanel → slot-to-slot swap (existing item goes to source slot)
-Mouse released outside BagPanel → UIManager.spawnWorldItemAtPlayer()
+Released inside BagPanel           → slot-to-slot swap
+Released on compatible EquipSlot   → equip; displaced item returns to source bag slot
+Released on incompatible EquipSlot → item returns to original bag slot
+Released in open space             → spawnWorldItemAtPlayer()
+```
+
+### Equipment Drag-Drop Flow
+```
+EquipSlot.onMouseDown → startEquipDrag() → unequip, store draggingEquipItem
+
+Released on compatible EquipSlot   → equip; displaced goes to bag
+Released on incompatible EquipSlot → item returns to source EquipSlot (re-equipped)
+Released on BagSlot                → placed in bag
+Released in open space             → spawnWorldItemAtPlayer()
 ```
 
 ### Config Format (`data/config/items/*.json`)
@@ -487,7 +502,40 @@ Mouse released outside BagPanel → UIManager.spawnWorldItemAtPlayer()
 
 ---
 
-## 22. Known Issues (Must Fix Before Extending)
+## 22. XP, Leveling & Floating Text
+
+### XP Flow
+```
+Mob dies → XPReward.deathListener fires
+  → playerXP.addXP(amount)
+  → scene.addObject(FloatingTextPrefab "+N XP")
+  → if leveled: playerXP.onLevelUp.run()
+    → playerStats.levelUp() (+2 all base stats)
+    → scene.addObject(FloatingTextPrefab "Level Up!")
+```
+
+### XPReward Self-Wiring Pattern
+`XPReward.start()` registers its own `Health.DeathListener`. It caches `PlayerXP` at start time by scanning scene objects **once** — not inside the death callback — to avoid nested iterator crashes.
+
+Any mob that should award XP: add `new XPReward(cfg.stats.xpReward)` to its prefab. No scene wiring needed.
+
+### FloatingText
+- `FloatingText` component: rises at `riseSpeed` world-units/sec, fades out linearly over `duration`
+- Position converted world→screen via `Camera.worldToScreenX/Y()` each frame
+- Font created in constructor (not `start()`) — safe for same-frame render
+- Self-destroys when elapsed ≥ duration; disposes font in `onDestroy()`
+
+### XP Bar Overlay
+`XPBarPanel` renders a dark-purple overlay on newly-gained segments for 0.8s after each gain. On level-up the bar resets to 0; no overlay is shown.
+
+### Nested Iterator Constraint
+libGDX `SnapshotArray` supports at most **2 simultaneous for-each iterators**. The `DamageOnHit` loop consumes one slot. Any callback fired from within that loop may use a second. A third nested for-each throws `#iterator() cannot be used nested`. To avoid this:
+- Cache scene lookups at `start()`, not in update/death callbacks
+- `UIManager.onLevelUp` captures player Transform at `init()` time, not inside the lambda
+
+---
+
+## 23. Known Issues (Must Fix Before Extending)
 
 | Issue | Location | Fix |
 |-------|----------|-----|
