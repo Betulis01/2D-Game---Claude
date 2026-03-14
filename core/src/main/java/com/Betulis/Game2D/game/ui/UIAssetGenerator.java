@@ -21,6 +21,26 @@ public class UIAssetGenerator {
             Gdx.files.local("ui/").mkdirs();
             writePickupPrompt();
         }
+        if (!Gdx.files.local("ui/panels/spellbook_panel.png").exists()) {
+            Gdx.files.local("ui/panels/").mkdirs();
+            writePanelBg("ui/panels/spellbook_panel.png", 300, 200);
+            writePanelBg("ui/panels/character_panel.png", 200, 480);
+            writePanelBg("ui/panels/talent_panel.png", 164, 184);
+        }
+    }
+
+    private static void writePanelBg(String path, int w, int h) {
+        Pixmap p = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+        // Body fill
+        p.setColor(toColor(0x141426EB));
+        p.fill();
+        // Title bar (top 18px) — Pixmap Y=0 is top
+        p.setColor(toColor(0x26264DFF));
+        p.fillRectangle(0, 0, w, 18);
+        // Border
+        drawBorder(p, w, h, 0x8888aaff, 1);
+        PixmapIO.writePNG(Gdx.files.local(path), p);
+        p.dispose();
     }
 
     private static void writePickupPrompt() {

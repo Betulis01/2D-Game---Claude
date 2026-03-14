@@ -17,6 +17,8 @@ public class TalentPanel extends UIPanel {
             COLS * (SLOT_SIZE + SLOT_GAP) + 20f,
             ROWS * (SLOT_SIZE + SLOT_GAP) + 40f);
 
+        loadPanelBg("ui/panels/talent_panel.png");
+
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
                 float slotX = x + 10f + col * (SLOT_SIZE + SLOT_GAP);

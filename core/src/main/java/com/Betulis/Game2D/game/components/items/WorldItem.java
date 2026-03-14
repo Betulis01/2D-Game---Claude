@@ -15,12 +15,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class WorldItem extends Component {
 
-    private static final float PICKUP_RANGE = 60f;
+    private static final float PICKUP_RANGE = 20f;
 
     private final ItemDefinition itemDef;
     private Transform playerTransform;
-    private Texture promptTexture;
-    private boolean showPrompt;
+    private Texture interactTexture;
+    private boolean showInteract;
     private InputBindings input;
 
     public WorldItem(ItemDefinition itemDef) {
@@ -35,8 +35,8 @@ public class WorldItem extends Component {
                 break;
             }
         }
-        if (Gdx.files.local("ui/pickup_prompt.png").exists()) {
-            promptTexture = new Texture(Gdx.files.local("ui/pickup_prompt.png"));
+        if (Gdx.files.local("assets/ui/interact_button.png").exists()) {
+            interactTexture = new Texture(Gdx.files.local("ui/interact_button.png"));
         }
         input = getScene().getGame().getInput();
     }
@@ -47,8 +47,8 @@ public class WorldItem extends Component {
         float dx = playerTransform.getWorldX() - transform.getWorldX();
         float dy = playerTransform.getWorldY() - transform.getWorldY();
         float dist = (float) Math.sqrt(dx * dx + dy * dy);
-        showPrompt = dist < PICKUP_RANGE;
-        if (showPrompt && input.isPressed(InputBindings.Action.PICKUP_ITEM)) {
+        showInteract = dist < PICKUP_RANGE;
+        if (showInteract && input.isPressed(InputBindings.Action.PICKUP_ITEM)) {
             tryPickup();
         }
     }
@@ -67,9 +67,9 @@ public class WorldItem extends Component {
         batch.setColor(Color.WHITE);
         batch.draw(icon, sx - size * 0.5f, sy - size * 0.5f, size, size);
 
-        if (showPrompt && promptTexture != null) {
-            float pSize = 10f * zoom;
-            batch.draw(promptTexture, sx - pSize * 0.5f, sy + size * 0.5f + 4f, pSize, pSize);
+        if (showInteract && interactTexture != null) {
+            float pSize = 16f * zoom;
+            batch.draw(interactTexture, sx - pSize * 0.5f, sy + size * 0.5f, pSize, pSize);
         }
     }
 
@@ -83,9 +83,9 @@ public class WorldItem extends Component {
 
     @Override
     public void onDestroy() {
-        if (promptTexture != null) {
-            promptTexture.dispose();
-            promptTexture = null;
+        if (interactTexture != null) {
+            interactTexture.dispose();
+            interactTexture = null;
         }
     }
 }

@@ -13,6 +13,8 @@ public class CharacterPanel extends UIPanel {
     public CharacterPanel(float screenW, float screenH, Map<String, Texture> equipTextures, Texture slotFallback) {
         super("Character", 20f, screenH / 2f - 250f, 200f, 480f);
 
+        loadPanelBg("ui/panels/character_panel.png");
+
         float leftX = x + 8f;
         float rightX = x + w - SLOT_SIZE - 8f;
         float topY = y + h - 60f;

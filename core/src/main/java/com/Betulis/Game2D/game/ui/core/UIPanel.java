@@ -1,5 +1,6 @@
 package com.Betulis.Game2D.game.ui.core;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,6 +13,7 @@ public class UIPanel extends UIWidget {
     protected String title;
     protected List<UIWidget> children = new ArrayList<>();
     protected Texture background;
+    protected Texture panelBg; // null = fall back to manual draw
 
     private static final float TITLE_BAR_H = 18f;
     private static final Color BG_COLOR = new Color(0.08f, 0.08f, 0.15f, 0.92f);
@@ -24,6 +26,14 @@ public class UIPanel extends UIWidget {
         this.w = w;
         this.h = h;
         this.visible = false; // panels start hidden
+    }
+
+    protected void loadPanelBg(String path) {
+        if (Gdx.files.local(path).exists()) {
+            panelBg = new Texture(Gdx.files.local(path));
+            this.w = panelBg.getWidth();
+            this.h = panelBg.getHeight();
+        }
     }
 
     public void toggle() { visible = !visible; }
@@ -41,13 +51,18 @@ public class UIPanel extends UIWidget {
         if (!visible) return;
 
         // Panel background
-        Texture pixel = getPanelPixel(batch);
-        if (pixel != null) {
-            batch.setColor(BG_COLOR);
-            batch.draw(pixel, x, y, w, h);
-            batch.setColor(TITLE_BG);
-            batch.draw(pixel, x, y + h - TITLE_BAR_H, w, TITLE_BAR_H);
+        if (panelBg != null) {
             batch.setColor(Color.WHITE);
+            batch.draw(panelBg, x, y);
+        } else {
+            Texture pixel = getPanelPixel(batch);
+            if (pixel != null) {
+                batch.setColor(BG_COLOR);
+                batch.draw(pixel, x, y, w, h);
+                batch.setColor(TITLE_BG);
+                batch.draw(pixel, x, y + h - TITLE_BAR_H, w, TITLE_BAR_H);
+                batch.setColor(Color.WHITE);
+            }
         }
 
         // Title text
@@ -82,7 +97,7 @@ public class UIPanel extends UIWidget {
         for (UIWidget child : children) {
             if (child.onMouseUp(mx, my)) return true;
         }
-        return false;
+        return contains(mx, my);
     }
 
     // Returns a white pixel texture from the first draw-call context — we'll inject it from UIManager

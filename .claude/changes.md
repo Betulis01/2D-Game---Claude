@@ -6,6 +6,11 @@
 ---
 
 ## 2026-03-14
+- PNG-backed UIPanel backgrounds → panels render dedicated .png at 1:1 instead of manual pixel+tint draw
+- UIPanel.onMouseUp() → fixed to return contains(mx,my) instead of false (clicks no longer leak through open panels)
+- UIPanel → added loadPanelBg(path): loads PNG, updates w/h to match pixel dimensions; panelBg field + Gdx import
+- UIAssetGenerator → added writePanelBg() + generates spellbook/character/talent panel PNGs on first run
+- BagPanel/SpellBookPanel/CharacterPanel/TalentPanel → each calls loadPanelBg() after super(); BagPanel gap 4→6px
 - Loot drop system → slime death (60%) spawns WorldItem on ground; player picks up with F key into bag
 - New: ItemDefinition, ItemConfig (JSON POJO), Inventory (4×4 model), LootDropper, WorldItem, WorldItemPrefab, ItemSlot
 - BagPanel → refactored from SpellSlot to ItemSlot grid; accepts Inventory; exposes refresh() + getItemSlots()

@@ -9,7 +9,7 @@ public class BagPanel extends UIPanel {
     private static final int COLS = 4;
     private static final int ROWS = 4;
     private static final float SLOT_SIZE = 40f;
-    private static final float SLOT_GAP = 4f;
+    private static final float SLOT_GAP = 6f;
 
     private final ItemSlot[] itemSlots = new ItemSlot[ROWS * COLS];
 
@@ -20,11 +20,13 @@ public class BagPanel extends UIPanel {
             COLS * (SLOT_SIZE + SLOT_GAP) + 10f,
             ROWS * (SLOT_SIZE + SLOT_GAP) + 30f);
 
+        loadPanelBg("assets/ui/panels/inventory_panel.png");
+
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
                 int idx = row * COLS + col;
-                float slotX = x + 5f + col * (SLOT_SIZE + SLOT_GAP);
-                float slotY = y + 5f + (ROWS - 1 - row) * (SLOT_SIZE + SLOT_GAP);
+                float slotX = x + 10f + col * (SLOT_SIZE + SLOT_GAP);
+                float slotY = y + 10f + (ROWS - 1 - row) * (SLOT_SIZE + SLOT_GAP);
                 ItemSlot slot = new ItemSlot(slotX, slotY, SLOT_SIZE, idx, slotBg);
                 if (inventory != null) slot.setItem(inventory.getSlot(idx));
                 itemSlots[idx] = slot;

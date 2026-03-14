@@ -6,7 +6,8 @@
 
 ## Layout
 - Position: `(screenW - 210, screenH - 220)`
-- 4 columns × 4 rows, slot size 40px, gap 4px
+- 4 columns × 4 rows, slot size 40px, gap 6px
+- Background: `assets/ui/panels/inventory_panel.png` loaded via `loadPanelBg()` (w/h updated to PNG size)
 - Starts hidden (`visible = false`)
 
 ## Fields

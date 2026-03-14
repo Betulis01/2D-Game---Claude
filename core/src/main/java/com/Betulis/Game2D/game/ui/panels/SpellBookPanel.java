@@ -15,6 +15,8 @@ public class SpellBookPanel extends UIPanel {
     public SpellBookPanel(float screenW, float screenH, Texture slotBg, SpellDefinition fireball, SpellDefinition lightning) {
         super("Spellbook", screenW / 2f - 150f, screenH / 2f - 200f, 300f, 200f);
 
+        loadPanelBg("ui/panels/spellbook_panel.png");
+
         float startX = x + 20f;
         float slotY = y + 100f;
         float labelY = slotY - 4f;
