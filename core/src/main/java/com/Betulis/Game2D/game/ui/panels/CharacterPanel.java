@@ -1,5 +1,6 @@
 package com.Betulis.Game2D.game.ui.panels;
 
+import com.Betulis.Game2D.game.components.stats.PlayerXP;
 import com.Betulis.Game2D.game.ui.PlayerStats;
 import com.Betulis.Game2D.game.ui.core.UIPanel;
 import com.Betulis.Game2D.game.ui.widgets.EquipmentSlot;
@@ -18,6 +19,7 @@ public class CharacterPanel extends UIPanel {
 
     private final List<EquipmentSlot> equipSlots = new ArrayList<>();
     private PlayerStats playerStats;
+    private PlayerXP playerXP;
 
     public CharacterPanel(float screenW, float screenH, Map<String, Texture> equipTextures, Texture slotFallback) {
         super("Character", 20f, screenH / 2f - 250f, 200f, 480f);
@@ -72,6 +74,10 @@ public class CharacterPanel extends UIPanel {
             float cx    = x + w / 2f - 28f;
             float cy    = y + h - 80f;
             float lineH = 18f;
+            if (playerXP != null) {
+                font.setColor(Color.GOLD);
+                font.draw(batch, "Level " + playerXP.getLevel(), cx, y + h - 60f);
+            }
             font.setColor(Color.WHITE);
             font.draw(batch, "STR: " + playerStats.getStrength(),     cx, cy);
             font.draw(batch, "AGI: " + playerStats.getAgility(),      cx, cy - lineH);
@@ -82,5 +88,6 @@ public class CharacterPanel extends UIPanel {
     }
 
     public void setPlayerStats(PlayerStats stats) { this.playerStats = stats; }
+    public void setPlayerXP(PlayerXP xp)          { this.playerXP = xp; }
     public List<EquipmentSlot> getEquipSlots()    { return equipSlots; }
 }

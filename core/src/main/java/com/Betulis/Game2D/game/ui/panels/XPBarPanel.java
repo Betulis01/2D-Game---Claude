@@ -45,5 +45,20 @@ public class XPBarPanel extends UIWidget {
             Texture tex = (i < filledSegments) ? xpFull : xpEmpty;
             batch.draw(tex, segX, y, SEG_W, SEG_H);
         }
+
+        if (playerXP != null && playerXP.getGainTimer() > 0) {
+            float alpha  = playerXP.getGainTimer() / 0.8f;
+            float gStart = playerXP.getGainStartRatio();
+            float gEnd   = playerXP.getGainEndRatio();
+            for (int i = 0; i < SEGMENTS; i++) {
+                float segStart = (float) i / SEGMENTS;
+                float segEnd   = (float)(i + 1) / SEGMENTS;
+                if (segEnd > gStart && segStart < gEnd) {
+                    batch.setColor(0.35f, 0f, 0.55f, alpha);
+                    batch.draw(xpFull, x + i * (SEG_W + SEG_GAP), y, SEG_W, SEG_H);
+                }
+            }
+            batch.setColor(Color.WHITE);
+        }
     }
 }

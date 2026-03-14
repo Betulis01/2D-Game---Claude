@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SpellBarPanel extends UIWidget {
-    private static final int SLOT_COUNT = 4;
+    private static final int SLOT_COUNT = 3;
     public static final float SLOT_SIZE = 32f;
     public static final float SLOT_GAP = 2f;
 
@@ -20,8 +20,7 @@ public class SpellBarPanel extends UIWidget {
     private static final InputBindings.Action[] SLOT_ACTIONS = {
         InputBindings.Action.SPELL_1,
         InputBindings.Action.SPELL_2,
-        InputBindings.Action.SPELL_3,
-        InputBindings.Action.SPELL_4
+        InputBindings.Action.SPELL_3
     };
 
     public SpellBarPanel(float screenW, SpellBar spellBarData, Texture slotBg, InputBindings input) {

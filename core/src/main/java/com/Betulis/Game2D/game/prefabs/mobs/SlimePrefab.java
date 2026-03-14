@@ -20,6 +20,7 @@ import com.Betulis.Game2D.game.components.movement.EntityMover;
 import com.Betulis.Game2D.game.components.movement.WanderMovement;
 import com.Betulis.Game2D.game.components.render.HealthRenderer;
 import com.Betulis.Game2D.game.components.stats.Health;
+import com.Betulis.Game2D.game.components.stats.XPReward;
 import com.badlogic.gdx.graphics.Texture;
 
 public class SlimePrefab {
@@ -60,6 +61,9 @@ public class SlimePrefab {
 
         //Hurtbox
         slimeObj.addComponent(new Hurtbox(cfg.hurtbox.width, cfg.hurtbox.height, cfg.hurtbox.offsetX, cfg.hurtbox.offsetY));
+
+        //XP Reward
+        slimeObj.addComponent(new XPReward(cfg.stats.xpReward));
 
         //Loot
         slimeObj.addComponent(new LootDropper(Assets.small_sword, "data/config/items/small-sword.json", 0.6f));

@@ -1,7 +1,5 @@
 package com.Betulis.Game2D.game.components.combat;
 
-import java.util.List;
-
 import com.Betulis.Game2D.engine.math.AABB;
 import com.Betulis.Game2D.engine.system.Component;
 import com.Betulis.Game2D.engine.system.GameObject;
@@ -9,7 +7,9 @@ import com.Betulis.Game2D.game.components.AABB.Hitbox;
 import com.Betulis.Game2D.game.components.AABB.Hurtbox;
 import com.Betulis.Game2D.game.components.ai.SlimeAI;
 import com.Betulis.Game2D.game.components.stats.Health;
+import com.Betulis.Game2D.game.prefabs.FloatingTextPrefab;
 import com.Betulis.Game2D.game.prefabs.attacks.FireballExplosion;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.SnapshotArray;
 
 
@@ -49,6 +49,11 @@ public class DamageOnHit extends Component {
         if (slimeAI != null) {
             slimeAI.aggro(owner.getTransform());
         }
+
+        //Floating damage text
+        float tx = target.getTransform().getWorldX();
+        float ty = target.getTransform().getWorldY() + 16f;
+        getScene().addObject(FloatingTextPrefab.create(tx, ty, "-" + (int) dmg, Color.RED, 1.0f));
 
         //Animation
         spawnExplosion(target);

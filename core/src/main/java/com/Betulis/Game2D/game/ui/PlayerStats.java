@@ -9,6 +9,8 @@ public class PlayerStats {
     private int baseStrength, baseAgility, baseStamina;
     private float baseSpeed, baseDamage;
 
+    private Equipment currentEquipment = new Equipment();
+
     private int strength, agility, stamina;
     private float speed, damage;
 
@@ -22,6 +24,7 @@ public class PlayerStats {
     }
 
     public void recalculate(Equipment eq) {
+        this.currentEquipment = eq;
         strength = baseStrength;
         agility  = baseAgility;
         stamina  = baseStamina;
@@ -41,6 +44,14 @@ public class PlayerStats {
             }
             speed += cfg.speed;
         }
+    }
+
+    public void levelUp() {
+        baseStrength += 2;
+        baseAgility  += 2;
+        baseStamina  += 2;
+        baseDamage   += 2;
+        recalculate(currentEquipment);
     }
 
     public int   getStrength() { return strength; }

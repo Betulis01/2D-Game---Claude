@@ -10,6 +10,7 @@
     "attack": 10,
     "defense": 5,
     "attackSpeed": 1.2,
-    "critChance": 0.05
+    "critChance": 0.05,
+    "xpReward": 2
   }
 }

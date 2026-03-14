@@ -1,0 +1,3 @@
+Now lets make XP (experience) work. The XP bar should be connected to the players experience points. We should also add level, so maybe 100 XP gives 1 level. Player starts at lvl 1. When a slime is killed it should provide 2 XP and increase the xp-bar (for now draw the increase with dark purple color). The player can level up, which increases all player stats with +2. Display player level at the top of the character panel.
+
+Lets also make a damage effect that displays the amount of damage a spell does when it hits a target. With red color font. The same should show when a mob (for now the Slime) it should show "+ 2 XP" at the position of the target death. XP with dark purple color font. 

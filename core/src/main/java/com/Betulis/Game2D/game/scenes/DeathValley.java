@@ -8,7 +8,11 @@ import com.Betulis.Game2D.engine.system.GameObject;
 import com.Betulis.Game2D.engine.system.Scene;
 import com.Betulis.Game2D.engine.system.Transform;
 import com.Betulis.Game2D.engine.tiled.TiledMapLoader;
+import com.Betulis.Game2D.game.components.stats.Health;
 import com.Betulis.Game2D.game.components.stats.PlayerXP;
+import com.Betulis.Game2D.game.components.stats.XPReward;
+import com.Betulis.Game2D.game.prefabs.FloatingTextPrefab;
+import com.badlogic.gdx.graphics.Color;
 import com.Betulis.Game2D.game.prefabs.camera.CameraPrefab;
 import com.Betulis.Game2D.game.prefabs.mobs.SlimePrefab;
 import com.Betulis.Game2D.game.prefabs.player.PlayerPrefab;
@@ -43,10 +47,17 @@ public class DeathValley extends Scene {
         addObject(playerObj);
         
         //Slime
+        Color xpColor = new Color(0.4f, 0f, 0.55f, 1f);
+        SlimePrefab slimePrefab = new SlimePrefab();
         for (int i = 0; i < 10; i++) {
-            SlimePrefab slimePrefab = new SlimePrefab();
-            GameObject slimeObj = slimePrefab.create(200,200,getGame().getAssets().getTexture("mob/slime.png"));
-            addObject(slimeObj);
+            final GameObject slimeRef = slimePrefab.create(200, 200, getGame().getAssets().getTexture("mob/slime.png"));
+            slimeRef.getComponent(Health.class).setDeathListener((dx, dy, scene) -> {
+                XPReward reward = slimeRef.getComponent(XPReward.class);
+                float xp = reward != null ? reward.getAmount() : 0f;
+                playerXP.addXP(xp);
+                scene.addObject(FloatingTextPrefab.create(dx, dy + 10f, "+" + (int) xp + " XP", xpColor, 1.2f));
+            });
+            addObject(slimeRef);
         }
 
         // Camera

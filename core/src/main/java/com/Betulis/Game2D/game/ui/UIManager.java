@@ -8,12 +8,14 @@ import com.Betulis.Game2D.engine.config.EntityConfig;
 import com.Betulis.Game2D.engine.system.Game;
 import com.Betulis.Game2D.engine.system.GameObject;
 import com.Betulis.Game2D.engine.system.Scene;
+import com.Betulis.Game2D.engine.system.Transform;
 import com.Betulis.Game2D.game.components.movement.PlayerController;
 import com.Betulis.Game2D.game.components.stats.PlayerXP;
 import com.Betulis.Game2D.game.input.InputBindings;
 import com.Betulis.Game2D.game.inventory.Equipment;
 import com.Betulis.Game2D.game.inventory.Inventory;
 import com.Betulis.Game2D.game.inventory.ItemDefinition;
+import com.Betulis.Game2D.game.prefabs.FloatingTextPrefab;
 import com.Betulis.Game2D.game.prefabs.items.WorldItemPrefab;
 import com.Betulis.Game2D.game.ui.core.UIPanel;
 import com.Betulis.Game2D.game.ui.data.SpellBar;
@@ -69,6 +71,7 @@ public class UIManager {
     private Inventory inventory;
     private Equipment equipment;
     private PlayerStats playerStats;
+    private PlayerXP playerXP;
 
     private Texture whitePixel;
     private Texture slotBg;
@@ -114,6 +117,19 @@ public class UIManager {
         talents       = new TalentPanel(screenW, screenH, slotBg);
         xpBar         = new XPBarPanel(screenW, xpFull, xpEmpty);
         xpBar.setPlayerXP(playerXP);
+        this.playerXP = playerXP;
+        character.setPlayerXP(playerXP);
+
+        // Find player transform once — avoids iterating scene objects inside the level-up callback
+        Transform playerTransform = findPlayerTransform();
+        playerXP.setOnLevelUp(() -> {
+            playerStats.levelUp();
+            if (playerTransform != null) {
+                float px = playerTransform.getWorldX();
+                float py = playerTransform.getWorldY();
+                game.getScene().addObject(FloatingTextPrefab.create(px, py + 40f, "Level Up!", Color.GOLD, 2.0f));
+            }
+        });
 
         // Panel menu
         float menuY = spellBar.getY();
@@ -300,7 +316,7 @@ public class UIManager {
                         }
                         placed = true;
                         break;
-                    }
+                    } 
                 }
             }
             // Try bag slot
@@ -413,6 +429,15 @@ public class UIManager {
         this.draggingItemSlot = slotIndex;
         inventory.clearSlot(slotIndex);
         bag.refresh(inventory);
+    }
+
+    private Transform findPlayerTransform() {
+        for (GameObject obj : game.getScene().getObjects()) {
+            if (obj.getComponent(PlayerController.class) != null) {
+                return obj.getTransform();
+            }
+        }
+        return null;
     }
 
     private void spawnWorldItemAtPlayer(ItemDefinition item) {
