@@ -13,7 +13,13 @@
       "Bash(mkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/items\nmkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/components/items\nmkdir -p /c/Dev/2D-Game---Claude/.claude/context/game/ui/widgets)",
       "Bash(find:*)",
       "Bash(grep:*)",
-      "Bash(./gradlew :core:compileJava 2>&1 | tail -50)"
+      "Bash(./gradlew :core:compileJava 2>&1 | tail -50)",
+      "WebFetch(domain:www.gamedeveloper.com)",
+      "WebFetch(domain:eliasdaler.wordpress.com)",
+      "WebFetch(domain:danielrusnok.medium.com)",
+      "WebFetch(domain:andrewrussell.net)",
+      "WebFetch(domain:www.sunnyvalleystudio.com)",
+      "WebFetch(domain:mazebert.com)"
     ]
   }
 }

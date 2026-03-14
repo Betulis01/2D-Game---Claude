@@ -28,7 +28,9 @@ public class FireballExplosion {
         director.play("explode", false);
         effect.addComponent(director);
         effect.addComponent(new AnimationUpdater());
-        effect.addComponent(new RotatedSpriteRenderer(cfg.sprite.width, cfg.sprite.height));
+        RotatedSpriteRenderer rsr = new RotatedSpriteRenderer(cfg.sprite.width, cfg.sprite.height);
+        rsr.setSortLayer(3);
+        effect.addComponent(rsr);
 
         //Despawn
         effect.addComponent(new AnimationAutoDespawner());

@@ -2,9 +2,11 @@ package com.Betulis.Game2D.engine.system;
 
 import com.Betulis.Game2D.engine.camera.Camera;
 import com.Betulis.Game2D.engine.math.AABB;
+import com.Betulis.Game2D.engine.render.SpriteRenderer;
 import com.Betulis.Game2D.engine.tiled.TiledMap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.SnapshotArray;
+import java.util.Comparator;
 
 public abstract class Scene {
     protected TiledMap map;
@@ -12,6 +14,17 @@ public abstract class Scene {
     protected SnapshotArray<GameObject> objects;
     protected Game game;
     protected Camera camera;
+
+    private final Comparator<GameObject> renderComparator = (a, b) -> {
+        SpriteRenderer ra = a.getComponent(SpriteRenderer.class);
+        SpriteRenderer rb = b.getComponent(SpriteRenderer.class);
+        int layerA = ra != null ? ra.getSortLayer() : -1;
+        int layerB = rb != null ? rb.getSortLayer() : -1;
+        if (layerA != layerB) return Integer.compare(layerA, layerB);
+        float yA = ra != null ? a.getTransform().getWorldY() - ra.getSortYOffset() : 0f;
+        float yB = rb != null ? b.getTransform().getWorldY() - rb.getSortYOffset() : 0f;
+        return Float.compare(yB, yA); // descending: higher Y renders first (behind)
+    };
 
     /* LOAD */
     public void load(Game game) {
@@ -40,8 +53,9 @@ public abstract class Scene {
     }
 
     public void render(SpriteBatch batch) {
+        objects.sort(renderComparator);
         GameObject[] items = objects.begin();
-        int n = objects.size;  
+        int n = objects.size;
         for (int i = 0; i < n; i++) {
             items[i].render(batch);
         }

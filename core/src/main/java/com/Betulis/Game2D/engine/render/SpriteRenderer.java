@@ -14,10 +14,13 @@ public class SpriteRenderer extends Component {
 
     private final float width;
     private final float height;
+    private int   sortLayer   = 2;
+    private float sortYOffset;
 
     public SpriteRenderer(float width, float height) {
         this.width = width;
         this.height = height;
+        this.sortYOffset = height / 2f;
     }
 
     @Override
@@ -61,4 +64,9 @@ public class SpriteRenderer extends Component {
     public float getHeight() {
         return height;
     }
+
+    public int   getSortLayer()               { return sortLayer; }
+    public void  setSortLayer(int layer)      { this.sortLayer = layer; }
+    public float getSortYOffset()             { return sortYOffset; }
+    public void  setSortYOffset(float offset) { this.sortYOffset = offset; }
 }

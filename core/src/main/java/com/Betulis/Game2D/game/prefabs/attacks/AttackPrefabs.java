@@ -36,7 +36,9 @@ public final class AttackPrefabs {
         director.add("fly", fly);
         attack.addComponent(director);
         attack.addComponent(new AnimationUpdater());
-        attack.addComponent(new RotatedSpriteRenderer(cfg.sprite.width, cfg.sprite.height));
+        RotatedSpriteRenderer fireball_rsr = new RotatedSpriteRenderer(cfg.sprite.width, cfg.sprite.height);
+        fireball_rsr.setSortLayer(3);
+        attack.addComponent(fireball_rsr);
 
         //Despawner
         attack.addComponent(new AttackOutsideMapDespawner());
@@ -72,7 +74,9 @@ public final class AttackPrefabs {
         director.add("fly", fly);
         attack.addComponent(director);
         attack.addComponent(new AnimationUpdater());
-        attack.addComponent(new RotatedSpriteRenderer(cfg.sprite.width, cfg.sprite.height));
+        RotatedSpriteRenderer lightning_rsr = new RotatedSpriteRenderer(cfg.sprite.width, cfg.sprite.height);
+        lightning_rsr.setSortLayer(3);
+        attack.addComponent(lightning_rsr);
 
         //Despawner
         attack.addComponent(new AttackOutsideMapDespawner());
@@ -85,7 +89,7 @@ public final class AttackPrefabs {
         //Hitbox
         EntityConfig.Hitbox hi = cfg.hitbox;
         attack.addComponent(new Hitbox(hi.width,hi.height,hi.offsetX,hi.offsetY));
-        
+
         //Damage
         attack.addComponent(new DamageOnHit(owner, cfg.stats.damage));
 
