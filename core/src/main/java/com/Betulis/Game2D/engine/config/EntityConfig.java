@@ -3,6 +3,7 @@ package com.Betulis.Game2D.engine.config;
 public class EntityConfig {
     public String id;
     public String name;
+    public String[] onHitEffects;
     public Sprite sprite;
     public Collision collision;
     public Hurtbox hurtbox;

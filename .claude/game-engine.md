@@ -428,7 +428,7 @@ core/src/main/java/
     │   ├── animation/   PlayerAnimation, SlimeAnimation
     │   ├── stats/       Health, HealthRenderer, PlayerXP, XPReward
     │   ├── items/       LootDropper, WorldItem
-    │   └── (root)       FloatingText
+    │   └── (root)       FloatingText, Interactable, InteractPrompt
     ├── items/           ItemDefinition, ItemConfig, Inventory
     ├── prefabs/         PlayerPrefab, SlimePrefab, AttackPrefabs,
     │                    FireballExplosion, CameraPrefab, WorldItemPrefab,
@@ -461,12 +461,16 @@ Slime dies → LootDropper.onDestroy()
 
 ### Pickup Flow
 ```
-WorldItem.update(): dist to player < 60px → showPrompt
-  F pressed → tryPickup()
+Interactable.update(): squared dist < range² (20px) → inRange
+  F pressed → onInteract.run() → WorldItem.tryPickup()
     → ui.getInventory().addItem(itemDef)
     → ui.refreshBag()
-    → gameObject.destroy()
+    → gameObject.destroy() → Interactable.onDestroy()
+      → scene.removeOverlayObject(promptObject) → InteractPrompt disposed
 ```
+
+### Interact Prompt Architecture
+`WorldItemPrefab` attaches both `WorldItem` (icon render + tryPickup) and `Interactable` (range + input). `Interactable.start()` spawns a companion `InteractPrompt` GameObject into `overlayObjects` — it always renders on top of world entities. On destroy, `Interactable.onDestroy()` calls `scene.removeOverlayObject()` to prevent orphan prompts.
 
 ### Bag Drag-Drop Flow
 ```
@@ -495,9 +499,11 @@ Released in open space             → spawnWorldItemAtPlayer()
 ```
 
 ### Rules
-- `WorldItem` is self-contained — no item manager needed
+- `WorldItem` handles only icon rendering and inventory insertion — all proximity/input logic lives in `Interactable`
+- `Interactable` is reusable — attach to any GameObject needing proximity interaction (chests, NPCs, map objects)
+- Interact button texture (`assets/ui/interact_button.png`) is loaded/disposed per `InteractPrompt` instance
+- Companion prompt removal must use `scene.removeOverlayObject()` — `GameObject.destroy()` only removes from `objects`
 - Item icon texture is owned by `Assets`, never disposed by item classes
-- `promptTexture` (`ui/pickup_prompt.png`) loaded/disposed per `WorldItem` instance
 - Item drag and spell drag are tracked independently in `UIManager`
 
 ---

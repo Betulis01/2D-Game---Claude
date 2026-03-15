@@ -13,8 +13,10 @@ public static GameObject create(float x, float y, ItemDefinition itemDef)
 | Component | Purpose |
 |-----------|---------|
 | `Transform` | World position (x, y) |
-| `WorldItem` | Handles rendering, proximity, F-key pickup |
+| `WorldItem` | Icon rendering + inventory insertion (`tryPickup()`) |
+| `Interactable` | Range detection (20px), F-key input, fires `worldItem::tryPickup` |
 
 ## Rules
-- No scene reference needed at creation — `WorldItem.start()` resolves scene dependencies
+- No scene reference needed at creation — components resolve dependencies in `start()`
+- `Interactable` spawns its own `InteractPrompt` companion into `overlayObjects` automatically
 - Called from `LootDropper.onDestroy()` and `UIManager.spawnWorldItemAtPlayer()`

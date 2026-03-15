@@ -5,6 +5,16 @@
 
 ---
 
+## 2026-03-15
+- Interactable component system: extracted proximity/input/prompt logic out of WorldItem into reusable Interactable + InteractPrompt
+- New: `Interactable(range, action, onInteract)` — range check (squared dist), fires callback; spawns InteractPrompt companion into overlayObjects
+- New: `InteractPrompt(source)` — overlay component; reads source transform, draws button above item only when inRange
+- WorldItem: removed playerTransform/interactTexture/showInteract/input fields, removed update(), stripped prompt from render(); tryPickup() made public
+- WorldItemPrefab: wires WorldItem + Interactable(20f, PICKUP_ITEM, worldItem::tryPickup) together
+- Scene: added removeOverlayObject() so Interactable.onDestroy() can properly remove companion from overlayObjects
+
+---
+
 ## 2026-03-14
 - XP/level loop wired: slime death awards 2 XP, bar pulses dark-purple, level-up shows gold "Level Up!" text + stats +2
 - New: FloatingText (rise+fade component), FloatingTextPrefab, XPReward (self-wiring death listener), PlayerXP leveling

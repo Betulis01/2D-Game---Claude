@@ -2,32 +2,22 @@
 
 **File:** `core/.../game/components/items/WorldItem.java`
 **Extends:** `Component`
-**Role:** Self-contained world-pickup entity. Handles rendering (icon + F prompt), proximity detection, F-key pickup, and inventory insertion. No external manager needed.
+**Role:** Renders an item icon in the world. Pickup logic is handled externally by `Interactable` — this component only owns the visual and the inventory insertion.
 
 ## Fields
 | Field | Type | Purpose |
 |-------|------|---------|
 | `itemDef` | `ItemDefinition` | The item this entity represents |
-| `playerTransform` | `Transform` | Found via scene scan in `start()` |
-| `promptTexture` | `Texture` | `ui/pickup_prompt.png` loaded in `start()` |
-| `showPrompt` | `boolean` | True when player is within PICKUP_RANGE |
-| `input` | `InputBindings` | For polling PICKUP_ITEM (F key) |
-| `PICKUP_RANGE` | `float` (constant) | 60px |
 
 ## Key Methods / Logic
-- **`start()`** — scans `getScene().getObjects()` for first object with `PlayerController`; loads `ui/pickup_prompt.png` if it exists; gets InputBindings from game.
-- **`update(dt)`** — computes distance to player; sets `showPrompt`; if close and F pressed → `tryPickup()`.
-- **`render(batch)`** — world→screen via Camera; draws icon at 16×zoom size; draws prompt 24×24 above icon when `showPrompt`.
-- **`tryPickup()`** — calls `ui.getInventory().addItem(itemDef)`; on success calls `ui.refreshBag()` then `gameObject.destroy()`.
-- **`onDestroy()`** — disposes `promptTexture`.
+- **`render(batch)`** — world→screen via Camera; draws icon at 16×zoom size centered on transform.
+- **`tryPickup()`** — `public`; calls `ui.getInventory().addItem(itemDef)`; on success calls `ui.refreshBag()` then `gameObject.destroy()`.
 
 ## Dependencies
-- `Camera`, `PlayerController`, `InputBindings`
-- `UIManager` (via `getScene().getGame().getUI()`)
-- `Inventory`, `ItemDefinition`
+- `Camera`, `UIManager`, `ItemDefinition`
 
 ## Rules
-- Prompt texture is loaded and owned locally per instance — disposed on `onDestroy()`
-- Icon size is 16×zoom (adjusted by linter from original 32×zoom)
-- Prompt size is 10×zoom (adjusted)
+- Does NOT own proximity detection or input polling — that is delegated to `Interactable`
+- Does NOT own the interact button texture — that is owned by `InteractPrompt`
+- `tryPickup()` is public so `WorldItemPrefab` can pass `worldItem::tryPickup` as a method reference to `Interactable`
 - Does NOT use AnimationDirector — renders static Texture directly

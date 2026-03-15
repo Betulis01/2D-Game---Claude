@@ -31,9 +31,10 @@ public final class AttackSpawner extends Component {
     }
 
     private void spawnAttack(EntityConfig attack, Vector2 dir) {
+        var assets = getScene().getGame().getAssets();
         GameObject obj = switch (attack.id) {
-            case "lightning_bolt" -> AttackPrefabs.createLightningBolt(attack, getGameObject(), dir, getScene().getGame().getAssets().getTexture("abilities/lightning_bolt/lightning_bolt.png"));
-            case "fireball" -> AttackPrefabs.createFireball(attack, getGameObject(), dir, getScene().getGame().getAssets().getTexture("abilities/fireball/fireball_fly.png"));
+            case "lightning_bolt" -> AttackPrefabs.createLightningBolt(attack, getGameObject(), dir, assets);
+            case "fireball" -> AttackPrefabs.createFireball(attack, getGameObject(), dir, assets);
             default -> throw new IllegalArgumentException();
         };
         getScene().addObject(obj);

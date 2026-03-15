@@ -15,6 +15,7 @@ import com.Betulis.Game2D.game.components.items.LootDropper;
 import com.Betulis.Game2D.engine.utils.Assets;
 import com.Betulis.Game2D.game.components.animation.SlimeAnimation;
 import com.Betulis.Game2D.game.components.combat.CombatState;
+import com.Betulis.Game2D.game.components.combat.ReactOnHit;
 import com.Betulis.Game2D.game.components.movement.ChaseMovement;
 import com.Betulis.Game2D.game.components.movement.EntityMover;
 import com.Betulis.Game2D.game.components.movement.WanderMovement;
@@ -38,7 +39,8 @@ public class SlimePrefab {
         slimeObj.addComponent(new WanderMovement(wanderSpeed));
         slimeObj.addComponent(new ChaseMovement(cfg.sprite.width, chaseSpeed));
         slimeObj.addComponent(new EntityMover(wanderSpeed));
-        slimeObj.addComponent(new SlimeAI());
+        SlimeAI slimeAI = new SlimeAI();
+        slimeObj.addComponent(slimeAI);
 
         //Animation
         SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, cfg.sprite.frames, cfg.sprite.directions);
@@ -58,6 +60,9 @@ public class SlimePrefab {
 
         //Combat
         slimeObj.addComponent(new CombatState());
+        ReactOnHit react = new ReactOnHit();
+        react.add(ctx -> slimeAI.aggro(ctx.attacker.getTransform()));
+        slimeObj.addComponent(react);
 
         //Hurtbox
         slimeObj.addComponent(new Hurtbox(cfg.hurtbox.width, cfg.hurtbox.height, cfg.hurtbox.offsetX, cfg.hurtbox.offsetY));

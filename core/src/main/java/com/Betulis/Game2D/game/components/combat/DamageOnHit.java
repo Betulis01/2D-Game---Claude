@@ -5,23 +5,24 @@ import com.Betulis.Game2D.engine.system.Component;
 import com.Betulis.Game2D.engine.system.GameObject;
 import com.Betulis.Game2D.game.components.AABB.Hitbox;
 import com.Betulis.Game2D.game.components.AABB.Hurtbox;
-import com.Betulis.Game2D.game.components.ai.SlimeAI;
 import com.Betulis.Game2D.game.components.stats.Health;
-import com.Betulis.Game2D.game.prefabs.FloatingTextPrefab;
-import com.Betulis.Game2D.game.prefabs.attacks.FireballExplosion;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.SnapshotArray;
 
+import java.util.List;
 
 public class DamageOnHit extends Component {
     private final GameObject owner;
     private final float dmg;
+    private final String attackId;
+    private final List<HitEffect> effects;
 
-    public DamageOnHit(GameObject owner, float dmg) {
+    public DamageOnHit(GameObject owner, float dmg, String attackId, List<HitEffect> effects) {
         this.owner = owner;
         this.dmg = dmg;
+        this.attackId = attackId;
+        this.effects = effects;
     }
-    
+
     @Override
     public void update(float dt) {
         SnapshotArray<GameObject> gos = getScene().getObjects();
@@ -38,32 +39,19 @@ public class DamageOnHit extends Component {
         }
     }
 
-    public void onHit(GameObject target) {
-        GameObject go = getGameObject();
+    private void onHit(GameObject target) {
         owner.getComponent(CombatState.class).enterCombat();
         target.getComponent(CombatState.class).enterCombat();
 
+        HitContext ctx = new HitContext(owner, target, dmg, attackId);
 
-        //Aggro
-        SlimeAI slimeAI = target.getComponent(SlimeAI.class);
-        if (slimeAI != null) {
-            slimeAI.aggro(owner.getTransform());
+        for (HitEffect effect : effects) {
+            effect.apply(ctx, getScene());
         }
 
-        //Floating damage text
-        float tx = target.getTransform().getWorldX();
-        float ty = target.getTransform().getWorldY() + 16f;
-        getScene().addOverlayObject(FloatingTextPrefab.create(tx, ty, "-" + (int) dmg, Color.RED, 1.5f));
+        ReactOnHit react = target.getComponent(ReactOnHit.class);
+        if (react != null) react.trigger(ctx);
 
-        //Animation
-        spawnExplosion(target);
-
-        //Destroy
-        go.destroy();
-    }
-
-    private void spawnExplosion(GameObject target) {
-        GameObject explosion = FireballExplosion.create(target, getScene().getGame().getAssets().getTexture("abilities/fireball/fireball_explode.png"));
-        getScene().addObject(explosion);
+        getGameObject().destroy();
     }
 }
