@@ -12,7 +12,7 @@ public class HitEffectFactory {
     private final Map<String, HitEffect> registry = new HashMap<>();
 
     public HitEffectFactory(Assets assets) {
-        registry.put("fireball_explosion", new SpawnExplosionEffect(
+        registry.put("fireball_explosion", new SpawnHitEffect(
             target -> FireballExplosion.create(target, assets.getTexture(Assets.fireball_explode))
         ));
         registry.put("floating_damage", new FloatingDamageEffect());

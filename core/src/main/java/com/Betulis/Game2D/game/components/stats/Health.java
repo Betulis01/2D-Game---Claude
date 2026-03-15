@@ -1,13 +1,9 @@
 package com.Betulis.Game2D.game.components.stats;
 
 import com.Betulis.Game2D.engine.system.Component;
-import com.Betulis.Game2D.engine.system.Scene;
+import com.Betulis.Game2D.game.components.combat.DeathEffects;
 
 public class Health extends Component {
-    public interface DeathListener {
-        void onDeath(float worldX, float worldY, Scene scene);
-    }
-
     private final float max;
     private float current;
     private boolean dead;
@@ -15,15 +11,11 @@ public class Health extends Component {
     private final float damageCooldown;
     private float damageTimer;
 
-    private DeathListener deathListener;
-
     public Health(float max, float damageCooldown) {
         this.max = max;
         this.current = max;
         this.damageCooldown = damageCooldown;
     }
-
-    public void setDeathListener(DeathListener l) { this.deathListener = l; }
 
     @Override
     public void update(float dt) {
@@ -60,13 +52,8 @@ public class Health extends Component {
 
     private void onDeath() {
         dead = true;
-        if (deathListener != null) {
-            deathListener.onDeath(
-                getGameObject().getTransform().getWorldX(),
-                getGameObject().getTransform().getWorldY(),
-                getScene()
-            );
-        }
+        DeathEffects de = getGameObject().getComponent(DeathEffects.class);
+        if (de != null) de.trigger();
         getGameObject().destroy();
     }
 

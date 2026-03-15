@@ -10,6 +10,7 @@ public class Assets {
 
     public static final String orc_sheet = "player/orc8.png";
     public static final String slime_sheet = "mob/slime.png";
+    public static final String slime_death = "mob/slime/slime_death.png";
     public static final String fireball_fly = "abilities/fireball/fireball_fly.png";
     public static final String fireball_explode = "abilities/fireball/fireball_explode.png";
     public static final String fireball_nohit = "abilities/fireball/fireball_nohit.png";
@@ -24,6 +25,7 @@ public class Assets {
     public void load() {
         manager.load(orc_sheet, Texture.class);
         manager.load(slime_sheet, Texture.class);
+        manager.load(slime_death, Texture.class);
         manager.load(fireball_fly, Texture.class);
         manager.load(fireball_explode, Texture.class);
         manager.load(fireball_nohit, Texture.class);

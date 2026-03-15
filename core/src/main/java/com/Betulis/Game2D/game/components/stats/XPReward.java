@@ -2,6 +2,7 @@ package com.Betulis.Game2D.game.components.stats;
 
 import com.Betulis.Game2D.engine.system.Component;
 import com.Betulis.Game2D.engine.system.GameObject;
+import com.Betulis.Game2D.game.components.combat.DeathEffects;
 import com.Betulis.Game2D.game.prefabs.FloatingTextPrefab;
 import com.badlogic.gdx.graphics.Color;
 
@@ -14,14 +15,16 @@ public class XPReward extends Component {
 
     @Override
     public void start() {
-        Health health = getGameObject().getComponent(Health.class);
-        if (health == null) return;
+        DeathEffects deathEffects = getGameObject().getComponent(DeathEffects.class);
+        if (deathEffects == null) return;
 
         // Find PlayerXP once at start — avoids iterating scene objects during death (nested iterator)
         PlayerXP playerXP = findPlayerXP();
 
-        health.setDeathListener((dx, dy, scene) -> {
+        deathEffects.add((source, scene) -> {
             if (playerXP != null) playerXP.addXP(amount);
+            float dx = source.getTransform().getWorldX();
+            float dy = source.getTransform().getWorldY();
             scene.addOverlayObject(FloatingTextPrefab.create(dx, dy + 10f, "+" + (int) amount + " XP", XP_COLOR, 1.2f));
         });
     }

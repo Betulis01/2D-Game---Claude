@@ -1,6 +1,7 @@
 {
   "id": "slime",
   "name": "Slime",
+  "onDeathEffects": ["slime_death_animation"],
   "sprite": { "sheet": "mob/Slime.png", "width": 16, "height":16, "frames": 3, "directions": 1, "frameDuration": 0.15 },
   "collision": { "width": 0, "height": 2, "offsetX": 5, "offsetY": 5 },
   "hurtbox": { "width":  12, "height":  10, "offsetX": 0, "offsetY": -2},

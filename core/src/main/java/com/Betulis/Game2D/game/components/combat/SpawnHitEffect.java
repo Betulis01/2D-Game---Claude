@@ -5,10 +5,10 @@ import com.Betulis.Game2D.engine.system.Scene;
 
 import java.util.function.Function;
 
-public class SpawnExplosionEffect implements HitEffect {
+public class SpawnHitEffect implements HitEffect {
     private final Function<GameObject, GameObject> factory;
 
-    public SpawnExplosionEffect(Function<GameObject, GameObject> factory) {
+    public SpawnHitEffect(Function<GameObject, GameObject> factory) {
         this.factory = factory;
     }
 

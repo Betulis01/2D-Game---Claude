@@ -4,6 +4,7 @@ public class EntityConfig {
     public String id;
     public String name;
     public String[] onHitEffects;
+    public String[] onDeathEffects;
     public Sprite sprite;
     public Collision collision;
     public Hurtbox hurtbox;

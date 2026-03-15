@@ -10,7 +10,7 @@ import com.Betulis.Game2D.engine.system.Transform;
 import com.Betulis.Game2D.engine.tiled.TiledMapLoader;
 import com.Betulis.Game2D.game.components.stats.PlayerXP;
 import com.Betulis.Game2D.game.prefabs.camera.CameraPrefab;
-import com.Betulis.Game2D.game.prefabs.mobs.SlimePrefab;
+import com.Betulis.Game2D.game.prefabs.mobs.slime.SlimePrefab;
 import com.Betulis.Game2D.game.prefabs.player.PlayerPrefab;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -45,7 +45,7 @@ public class DeathValley extends Scene {
         //Slimes
         SlimePrefab slimePrefab = new SlimePrefab();
         for (int i = 0; i < 10; i++) {
-            addObject(slimePrefab.create(200, 200, getGame().getAssets().getTexture("mob/slime.png")));
+            addObject(slimePrefab.create(200, 200, getGame().getAssets().getTexture("mob/slime.png"), getGame().getAssets()));
         }
 
         // Camera
