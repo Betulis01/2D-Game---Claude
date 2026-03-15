@@ -1,0 +1,17 @@
+[
+  {
+    "id": "fireball_spawn",
+    "path": "abilities/fireball/sounds/fireball_2.mp3",
+    "category": "GAMEPLAY",
+    "baseVolume": 1.0,
+    "maxDistance": 400.0
+  }
+,
+  {
+    "id": "fireball_explosion",
+    "path": "abilities/fireball/sounds/explosion.mp3",
+    "category": "GAMEPLAY",
+    "baseVolume": 1.0,
+    "maxDistance": 400.0
+  }
+]

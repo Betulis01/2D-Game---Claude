@@ -1,6 +1,7 @@
 package com.Betulis.Game2D.game.prefabs.attacks;
 
 import com.Betulis.Game2D.engine.animation.AnimationAutoDespawner;
+import com.Betulis.Game2D.engine.audio.AudioPlayer;
 import com.Betulis.Game2D.engine.animation.AnimationClip;
 import com.Betulis.Game2D.engine.animation.AnimationDirector;
 import com.Betulis.Game2D.engine.animation.AnimationUpdater;
@@ -31,6 +32,9 @@ public class FireballExplosion {
         RotatedSpriteRenderer rsr = new RotatedSpriteRenderer(cfg.sprite.width, cfg.sprite.height);
         rsr.setSortLayer(3);
         effect.addComponent(rsr);
+
+        //Sound
+        effect.addComponent(new AudioPlayer("fireball_explosion"));
 
         //Despawn
         effect.addComponent(new AnimationAutoDespawner());

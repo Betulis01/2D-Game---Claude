@@ -1,5 +1,6 @@
 package com.Betulis.Game2D.engine.system;
 
+import com.Betulis.Game2D.engine.audio.AudioManager;
 import com.Betulis.Game2D.engine.render.DebugRender;
 import com.Betulis.Game2D.engine.utils.Assets;
 import com.Betulis.Game2D.game.input.InputBindings;
@@ -20,6 +21,7 @@ public class Game extends ApplicationAdapter {
     private DebugRender debugRender;
     private BitmapFont font;
     private Assets assets;
+    private AudioManager audioManager;
     private UIManager ui;
 
     //screen
@@ -62,6 +64,8 @@ public class Game extends ApplicationAdapter {
         assets = new Assets();
         assets.load();
         debugRender = new DebugRender(font, getAssets().getPixel());
+        audioManager = new AudioManager();
+        audioManager.load();
     }
 
 
@@ -86,7 +90,7 @@ public class Game extends ApplicationAdapter {
     @Override public void resize(int width, int height) {}
     @Override public void pause() {}
     @Override public void resume() {}
-    @Override public void dispose() { batch.dispose(); }
+    @Override public void dispose() { batch.dispose(); audioManager.dispose(); }
 
 
     public InputBindings getInput() {
@@ -119,5 +123,9 @@ public class Game extends ApplicationAdapter {
 
     public Scene getScene() {
         return scene;
+    }
+
+    public AudioManager getAudioManager() {
+        return audioManager;
     }
 }

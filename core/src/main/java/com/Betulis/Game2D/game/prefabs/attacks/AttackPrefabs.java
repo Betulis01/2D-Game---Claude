@@ -1,5 +1,6 @@
 package com.Betulis.Game2D.game.prefabs.attacks;
 
+import com.Betulis.Game2D.engine.audio.AudioPlayer;
 import com.Betulis.Game2D.engine.animation.AnimationClip;
 import com.Betulis.Game2D.engine.animation.AnimationDirector;
 import com.Betulis.Game2D.engine.animation.AnimationUpdater;
@@ -61,6 +62,13 @@ public final class AttackPrefabs {
         //Damage
         List<HitEffect> effects = new HitEffectFactory(assets).build(cfg.onHitEffects);
         attack.addComponent(new DamageOnHit(owner, cfg.stats.damage, cfg.id, effects));
+
+        //Sounds
+        if (cfg.spawnSounds != null) {
+            for (String id : cfg.spawnSounds) {
+                attack.addComponent(new AudioPlayer(id));
+            }
+        }
 
         return attack;
     }
