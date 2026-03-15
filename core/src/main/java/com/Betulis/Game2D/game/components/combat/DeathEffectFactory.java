@@ -1,7 +1,7 @@
 package com.Betulis.Game2D.game.components.combat;
 
 import com.Betulis.Game2D.engine.utils.Assets;
-import com.Betulis.Game2D.game.prefabs.mobs.SlimeDeathEffect;
+import com.Betulis.Game2D.game.prefabs.mobs.slime.SlimeDeathEffect;
 
 import java.util.ArrayList;
 import java.util.HashMap;
