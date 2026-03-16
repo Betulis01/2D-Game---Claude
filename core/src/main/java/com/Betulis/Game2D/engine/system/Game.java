@@ -48,6 +48,7 @@ public class Game extends ApplicationAdapter {
         UIAssetGenerator.generateIfAbsent();
         ui = new UIManager();
         ui.init(this, ((DeathValley) scene).getPlayerXP());
+        ((DeathValley) scene).wireUI(ui);
     }
 
     public void initWindow() {

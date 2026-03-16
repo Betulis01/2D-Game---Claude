@@ -8,15 +8,18 @@ import com.Betulis.Game2D.engine.system.GameObject;
 import com.Betulis.Game2D.engine.system.Scene;
 import com.Betulis.Game2D.engine.system.Transform;
 import com.Betulis.Game2D.engine.tiled.TiledMapLoader;
+import com.Betulis.Game2D.game.components.render.EquipmentLayerManager;
 import com.Betulis.Game2D.game.components.stats.PlayerXP;
 import com.Betulis.Game2D.game.prefabs.camera.CameraPrefab;
 import com.Betulis.Game2D.game.prefabs.mobs.slime.SlimePrefab;
 import com.Betulis.Game2D.game.prefabs.player.PlayerPrefab;
+import com.Betulis.Game2D.game.ui.UIManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class DeathValley extends Scene {
     private GameObject mapObject;
-    private PlayerXP playerXP;
+    private GameObject playerObj;
+    private PlayerXP   playerXP;
 
     public DeathValley() {
         super();
@@ -24,7 +27,7 @@ public class DeathValley extends Scene {
 
     @Override
     public void onLoad() {
-        //Map
+        // Map
         TiledMapLoader loader = new TiledMapLoader();
         map = loader.load("scenes/DeathValley.tmx");
         mapObject = new GameObject("DeathValley");
@@ -33,31 +36,40 @@ public class DeathValley extends Scene {
         addObject(mapObject);
         System.out.println("DeathValley loaded with map size: " + map.width + "x" + map.height);
 
-        //AABB
+        // AABB
         mapBounds = new AABB(0, 0, map.getWidth(), map.getHeight());
 
-        //Player
+        // Player
         PlayerPrefab playerPrefab = new PlayerPrefab();
-        GameObject playerObj = playerPrefab.create(100, 100, getGame().getAssets().getTexture("player/orc8.png"));
-        playerXP = playerObj.getComponent(PlayerXP.class);
+        playerObj = playerPrefab.create(100, 100, getGame().getAssets());
+        playerXP  = playerObj.getComponent(PlayerXP.class);
         addObject(playerObj);
         getGame().getAudioManager().setListenerTransform(playerObj.getComponent(Transform.class));
 
-        //Slimes
+        // Slimes
         SlimePrefab slimePrefab = new SlimePrefab();
         for (int i = 0; i < 10; i++) {
-            addObject(slimePrefab.create(200, 200, getGame().getAssets().getTexture("mob/slime.png"), getGame().getAssets()));
+            addObject(slimePrefab.create(200, 200, getGame().getAssets()));
         }
 
         // Camera
         CameraPrefab cameraPrefab = new CameraPrefab();
-        GameObject cameraObj = cameraPrefab.create(playerObj.getComponent(Transform.class), getGame().getScreenWidth(), getGame().getScreenHeight());
+        GameObject cameraObj = cameraPrefab.create(
+                playerObj.getComponent(Transform.class),
+                getGame().getScreenWidth(), getGame().getScreenHeight());
         addObject(cameraObj);
 
         Camera camera = cameraObj.getComponent(Camera.class);
         camera.setWorldBounds(map.width * map.tileWidth, map.height * map.tileHeight);
         camera.setZoom(3);
         setCamera(camera);
+    }
+
+    /** Wire the player's EquipmentLayerManager to the CharacterPanel after UI is ready. */
+    public void wireUI(UIManager uiManager) {
+        if (playerObj == null) return;
+        EquipmentLayerManager elm = playerObj.getComponent(EquipmentLayerManager.class);
+        if (elm != null) elm.init(uiManager.getCharacterPanel());
     }
 
     public PlayerXP getPlayerXP() { return playerXP; }

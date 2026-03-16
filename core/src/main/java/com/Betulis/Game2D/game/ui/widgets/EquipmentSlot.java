@@ -13,10 +13,16 @@ public class EquipmentSlot extends UIWidget {
     private final String slotType;
     private ItemDefinition item;
     private final Texture slotBg;
-    private DragListener dragListener;
+    private DragListener  dragListener;
+    private EquipListener equipListener;
 
     public interface DragListener {
         void onDragStart(ItemDefinition item, EquipmentSlot source);
+    }
+
+    public interface EquipListener {
+        void onEquip(ItemDefinition item);
+        void onUnequip();
     }
 
     public EquipmentSlot(float x, float y, float size, String slotKey, String slotType, Texture slotBg) {
@@ -54,15 +60,24 @@ public class EquipmentSlot extends UIWidget {
         if (!visible || !contains(mx, my)) return false;
         if (item != null && dragListener != null) {
             dragListener.onDragStart(item, this);
-            item = null;
+            setItem(null); // fires onUnequip via equipListener
             return true;
         }
         return true;
     }
 
-    public String getSlotKey()                       { return slotKey; }
-    public String getSlotType()                      { return slotType; }
-    public ItemDefinition getItem()                  { return item; }
-    public void setItem(ItemDefinition item)         { this.item = item; }
-    public void setDragListener(DragListener l)      { this.dragListener = l; }
+    public void setItem(ItemDefinition newItem) {
+        ItemDefinition old = this.item;
+        this.item = newItem;
+        if (equipListener != null) {
+            if (newItem != null)     equipListener.onEquip(newItem);
+            else if (old != null)    equipListener.onUnequip();
+        }
+    }
+
+    public String        getSlotKey()                    { return slotKey; }
+    public String        getSlotType()                   { return slotType; }
+    public ItemDefinition getItem()                      { return item; }
+    public void          setDragListener(DragListener l) { this.dragListener = l; }
+    public void          setEquipListener(EquipListener l){ this.equipListener = l; }
 }

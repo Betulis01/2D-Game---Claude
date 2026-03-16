@@ -186,9 +186,9 @@ public class UIManager {
         btnTal        = loadUI("/assets/ui/talent.png");
 
         String[] equipNames = {
-            "head_equip_icon", "shoulder_equip_icon", "back_equip_icon", "chest_equip_icon", "wrist_equip_icon",
-            "hands_equip_icon", "waist_equip_icon", "legs_equip_icon", "feet_equip_icon",
-            "ring_1_equip_icon", "ring_2_equip_icon", "trinket_equip_icon", "weapon_equip_icon", "relic_equip_icon"
+            "head_equip_icon", "chest_equip_icon", "legs_equip_icon",
+            "weapon_equip_icon", "shield_equip_icon", "relic_equip_icon",
+            "ring_1_equip_icon", "ring_2_equip_icon", "trinket_equip_icon"
         };
         for (String name : equipNames) {
             equipTextures.put(name, loadUI("assets/ui/panels/icons/" + name + ".png"));
@@ -502,4 +502,5 @@ public class UIManager {
     public Inventory getInventory()             { return inventory; }
     public SpellBar getSpellBarData()           { return spellBarData; }
     public SpellBar getMouseSpellBarData()      { return mouseSpellBarData; }
+    public CharacterPanel getCharacterPanel()   { return character; }
 }

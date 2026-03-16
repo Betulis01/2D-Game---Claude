@@ -31,32 +31,23 @@ public class CharacterPanel extends UIPanel {
         float topY   = y + h - 60f;
         float step   = SLOT_SIZE + SLOT_GAP;
 
-        // Left column: Head, Shoulder, Back, Chest, Wrist
-        addEquipSlot("head",     "HEAD",     "head_equip_icon",     leftX, topY - 0 * step, equipTextures, slotFallback);
-        addEquipSlot("shoulder", "SHOULDER", "shoulder_equip_icon", leftX, topY - 1 * step, equipTextures, slotFallback);
-        addEquipSlot("back",     "BACK",     "back_equip_icon",     leftX, topY - 2 * step, equipTextures, slotFallback);
-        addEquipSlot("chest",    "CHEST",    "chest_equip_icon",    leftX, topY - 3 * step, equipTextures, slotFallback);
-        addEquipSlot("wrist",    "WRIST",    "wrist_equip_icon",    leftX, topY - 4 * step, equipTextures, slotFallback);
+        // Left column: Head, Chest, Legs
+        addEquipSlot("head",  "HEAD",   "head_equip_icon",   leftX, topY - 0 * step, equipTextures, slotFallback);
+        addEquipSlot("chest", "CHEST",  "chest_equip_icon",  leftX, topY - 1 * step, equipTextures, slotFallback);
+        addEquipSlot("legs",  "LEGS",   "legs_equip_icon",   leftX, topY - 2 * step, equipTextures, slotFallback);
 
-        // Right column: Hands, Waist, Legs, Feet, Relic
-        addEquipSlot("hands",  "HANDS",  "hands_equip_icon",  rightX, topY - 0 * step, equipTextures, slotFallback);
-        addEquipSlot("waist",  "WAIST",  "waist_equip_icon",  rightX, topY - 1 * step, equipTextures, slotFallback);
-        addEquipSlot("legs",   "LEGS",   "legs_equip_icon",   rightX, topY - 2 * step, equipTextures, slotFallback);
-        addEquipSlot("feet",   "FEET",   "feet_equip_icon",   rightX, topY - 3 * step, equipTextures, slotFallback);
-        addEquipSlot("relic",  "RELIC",  "relic_equip_icon",  rightX, topY - 4 * step, equipTextures, slotFallback);
+        // Right column: Weapon, Shield, Relic
+        addEquipSlot("weapon", "WEAPON", "weapon_equip_icon", rightX, topY - 0 * step, equipTextures, slotFallback);
+        addEquipSlot("shield", "SHIELD", "shield_equip_icon", rightX, topY - 1 * step, equipTextures, slotFallback);
+        addEquipSlot("relic",  "RELIC",  "relic_equip_icon",  rightX, topY - 2 * step, equipTextures, slotFallback);
 
-        // Bottom row: Ring1, Ring2, Trinket1, Trinket2
+        // Bottom row: Ring × 2, Trinket × 2
         float bottomY     = y + 55f;
         float centerStart = x + (w - 2 * (SLOT_SIZE + SLOT_GAP)) / 2f;
         addEquipSlot("ring1",    "RING",    "ring_1_equip_icon",  centerStart,                        bottomY,        equipTextures, slotFallback);
         addEquipSlot("ring2",    "RING",    "ring_2_equip_icon",  centerStart + SLOT_SIZE + SLOT_GAP, bottomY,        equipTextures, slotFallback);
         addEquipSlot("trinket1", "TRINKET", "trinket_equip_icon", centerStart,                        bottomY - step, equipTextures, slotFallback);
         addEquipSlot("trinket2", "TRINKET", "trinket_equip_icon", centerStart + SLOT_SIZE + SLOT_GAP, bottomY - step, equipTextures, slotFallback);
-
-        // Weapon row
-        float weaponY = y + 10f;
-        addEquipSlot("weapon1", "WEAPON", "weapon_equip_icon", leftX,  weaponY, equipTextures, slotFallback);
-        addEquipSlot("weapon2", "WEAPON", "weapon_equip_icon", rightX, weaponY, equipTextures, slotFallback);
     }
 
     private void addEquipSlot(String slotKey, String slotType, String iconKey, float slotX, float slotY,

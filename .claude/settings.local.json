@@ -22,7 +22,11 @@
       "WebFetch(domain:mazebert.com)",
       "Bash(find \"/d/Dev/2D-Game - Claude\" -name \"slime.json\" -type f | head -1 | xargs cat)",
       "Bash(cd 'D:\\\\Dev\\\\2D-Game - Claude' && ./gradlew :core:compileJava 2>&1 | grep -E \"error:|warning:|BUILD\")",
-      "Bash(cd 'D:\\\\Dev\\\\2D-Game - Claude' && ./gradlew :core:compileJava 2>&1; echo \"Exit: $?\")"
+      "Bash(cd 'D:\\\\Dev\\\\2D-Game - Claude' && ./gradlew :core:compileJava 2>&1; echo \"Exit: $?\")",
+      "Bash(ls:*)",
+      "Bash(cd:*)",
+      "Bash(python3:*)",
+      "Bash(BASE=\"/d/Dev/2D-Game - Claude/core/src/main/java/com/Betulis/Game2D\"\nrm -f \"$BASE/engine/animation/AnimationClip.java\"\nrm -f \"$BASE/engine/animation/AnimationDirector.java\"\nrm -f \"$BASE/engine/animation/AnimationUpdater.java\"\nrm -f \"$BASE/engine/render/SpriteRenderer.java\"\nrm -f \"$BASE/engine/utils/SpriteSheetSlicer.java\"\nrm -f \"$BASE/game/components/animation/PlayerAnimation.java\"\necho \"Deleted dead files\")"
     ]
   }
 }

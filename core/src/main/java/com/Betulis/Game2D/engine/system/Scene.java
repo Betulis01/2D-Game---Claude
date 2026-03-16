@@ -2,7 +2,8 @@ package com.Betulis.Game2D.engine.system;
 
 import com.Betulis.Game2D.engine.camera.Camera;
 import com.Betulis.Game2D.engine.math.AABB;
-import com.Betulis.Game2D.engine.render.SpriteRenderer;
+import com.Betulis.Game2D.engine.render.LayeredSpriteRenderer;
+import com.Betulis.Game2D.engine.render.SimpleAnimRenderer;
 import com.Betulis.Game2D.engine.tiled.TiledMap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -17,13 +18,19 @@ public abstract class Scene {
     protected Camera camera;
 
     private final Comparator<GameObject> renderComparator = (a, b) -> {
-        SpriteRenderer ra = a.getComponent(SpriteRenderer.class);
-        SpriteRenderer rb = b.getComponent(SpriteRenderer.class);
-        int layerA = ra != null ? ra.getSortLayer() : -1;
-        int layerB = rb != null ? rb.getSortLayer() : -1;
+        SimpleAnimRenderer    ra = a.getComponent(SimpleAnimRenderer.class);
+        SimpleAnimRenderer    rb = b.getComponent(SimpleAnimRenderer.class);
+        LayeredSpriteRenderer la = (ra == null) ? a.getComponent(LayeredSpriteRenderer.class) : null;
+        LayeredSpriteRenderer lb = (rb == null) ? b.getComponent(LayeredSpriteRenderer.class) : null;
+
+        int layerA = ra != null ? ra.getSortLayer() : (la != null ? la.getSortLayer() : -1);
+        int layerB = rb != null ? rb.getSortLayer() : (lb != null ? lb.getSortLayer() : -1);
         if (layerA != layerB) return Integer.compare(layerA, layerB);
-        float yA = ra != null ? a.getTransform().getWorldY() - ra.getSortYOffset() : 0f;
-        float yB = rb != null ? b.getTransform().getWorldY() - rb.getSortYOffset() : 0f;
+
+        float yA = ra != null ? a.getTransform().getWorldY() - ra.getSortYOffset()
+                 : la != null ? a.getTransform().getWorldY() - la.getSortYOffset() : 0f;
+        float yB = rb != null ? b.getTransform().getWorldY() - rb.getSortYOffset()
+                 : lb != null ? b.getTransform().getWorldY() - lb.getSortYOffset() : 0f;
         return Float.compare(yB, yA); // descending: higher Y renders first (behind)
     };
 
@@ -46,12 +53,12 @@ public abstract class Scene {
 
     /* RENDER AND UPDATE */
     public void update(float dt) {
-        GameObject[] items = objects.begin(); // Create the snapshot
-        int n = objects.size; // size of the snapshot at begin()
-        for (int i = 0; i < n; i++) { // Iterate using a standard for-loop (SnapshotArray is optimized for this)
+        GameObject[] items = objects.begin();
+        int n = objects.size;
+        for (int i = 0; i < n; i++) {
             items[i].update(dt);
         }
-        objects.end(); // Commit any additions/removals that happened during the loop
+        objects.end();
 
         GameObject[] ov = overlayObjects.begin();
         int on = overlayObjects.size;

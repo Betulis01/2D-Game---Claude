@@ -1,15 +1,17 @@
 package com.Betulis.Game2D.game.components.movement;
 
 import com.Betulis.Game2D.engine.math.Vector2;
-import com.Betulis.Game2D.engine.render.SpriteRenderer;
+import com.Betulis.Game2D.engine.render.LayeredSpriteRenderer;
+import com.Betulis.Game2D.engine.render.SimpleAnimRenderer;
 import com.Betulis.Game2D.engine.system.Component;
 import com.Betulis.Game2D.engine.system.Transform;
 import com.Betulis.Game2D.game.components.AABB.Hitbox;
 
 public final class EntityMover extends Component {
 
-    private Movement movement;
-    private SpriteRenderer sprite;  
+    private Movement              movement;
+    private SimpleAnimRenderer    sprite;
+    private LayeredSpriteRenderer layeredSprite;
 
     private float speed;
 
@@ -19,14 +21,15 @@ public final class EntityMover extends Component {
 
     @Override
     public void start() {
-        transform = gameObject.getComponent(Transform.class);
-        movement  = gameObject.getComponent(Movement.class);
-        sprite    = gameObject.getComponent(SpriteRenderer.class);
+        transform     = gameObject.getComponent(Transform.class);
+        movement      = gameObject.getComponent(Movement.class);
+        sprite        = gameObject.getComponent(SimpleAnimRenderer.class);
+        layeredSprite = gameObject.getComponent(LayeredSpriteRenderer.class);
     }
 
     @Override
     public void update(float dt) {
-        if (movement == null || sprite == null) return;
+        if (movement == null || (sprite == null && layeredSprite == null)) return;
 
         movement.updateMovement(dt);
         if (!movement.isMoving()) return;
@@ -38,22 +41,18 @@ public final class EntityMover extends Component {
         float nextX = transform.getX() + dx;
         float nextY = transform.getY() + dy;
 
-        float halfW = sprite.getWidth()  * 0.5f;
-        float halfH = sprite.getHeight() * 0.5f;
+        float halfW = sprite != null ? sprite.getWidth()  * 0.5f : layeredSprite.getWidth()  * 0.5f;
+        float halfH = sprite != null ? sprite.getHeight() * 0.5f : layeredSprite.getHeight() * 0.5f;
 
-        
         float mapWidth  = getScene().getMap().getWidth();
         float mapHeight = getScene().getMap().getHeight();
 
         if (getGameObject().getComponent(Hitbox.class) == null) {
-            // Clamp the CENTER
             if (nextX < halfW) nextX = halfW;
             if (nextX > mapWidth - halfW) nextX = mapWidth - halfW;
-
             if (nextY < halfH) nextY = halfH;
             if (nextY > mapHeight - halfH) nextY = mapHeight - halfH;
         }
-
 
         transform.setPosition(nextX, nextY);
     }

@@ -65,3 +65,39 @@ subprojects {
 
 eclipse.project.name = '2D-Game' + '-parent'
 
+/* ─── Art Pipeline: Atlas Packing ──────────────────────────────────── */
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+configurations { packTools }
+
+dependencies {
+    packTools "com.badlogicgames.gdx:gdx-tools:${gdxVersion}"
+}
+
+def makePackTask(taskName, inputPath, outputPath, packName) {
+    tasks.create(taskName, JavaExec) {
+        group = 'art pipeline'
+        classpath = configurations.packTools
+        mainClass = 'com.badlogic.gdx.tools.texturepacker.TexturePacker'
+        def inputDir  = new File("${rootDir}/assets/${inputPath}")
+        def outputDir = new File("${rootDir}/assets/${outputPath}")
+        doFirst { outputDir.mkdirs() }
+        args inputDir.absolutePath, outputDir.absolutePath, packName
+    }
+}
+
+makePackTask('packPlayerAtlas',   'player/Orc',                   'player/atlas',                   'Orc')
+makePackTask('packFireballAtlas', 'abilities/fireball',           'abilities/fireball/atlas',        'fireball')
+makePackTask('packLightningAtlas','abilities/lightning_bolt',     'abilities/lightning_bolt/atlas',  'lightning_bolt')
+makePackTask('packSpitAtlas',     'abilities/spit',               'abilities/spit/atlas',            'spit')
+makePackTask('packSlimeAtlas',    'mob/slime',                    'mob/slime/atlas',                 'slime')
+
+task packAllAtlases {
+    group = 'art pipeline'
+    description = 'Pack all game sprite atlases'
+    dependsOn 'packPlayerAtlas', 'packFireballAtlas', 'packLightningAtlas', 'packSpitAtlas', 'packSlimeAtlas'
+}
+

@@ -1,33 +1,26 @@
 package com.Betulis.Game2D.game.prefabs.mobs.slime;
 
 import com.Betulis.Game2D.engine.animation.AnimationAutoDespawner;
-import com.Betulis.Game2D.engine.animation.AnimationClip;
-import com.Betulis.Game2D.engine.animation.AnimationDirector;
-import com.Betulis.Game2D.engine.animation.AnimationUpdater;
 import com.Betulis.Game2D.engine.config.ConfigLoader;
 import com.Betulis.Game2D.engine.config.EntityConfig;
-import com.Betulis.Game2D.engine.render.SpriteRenderer;
+import com.Betulis.Game2D.engine.render.SimpleAnimRenderer;
 import com.Betulis.Game2D.engine.system.GameObject;
-import com.Betulis.Game2D.engine.utils.SpriteSheetSlicer;
-import com.badlogic.gdx.graphics.Texture;
+import com.Betulis.Game2D.engine.utils.Assets;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class SlimeDeathEffect {
 
-    public static GameObject create(float x, float y, Texture asset) {
+    public static GameObject create(float x, float y, Assets assets) {
         EntityConfig cfg = new ConfigLoader().load("data/config/slime_death.json");
         GameObject effect = new GameObject("SlimeDeath");
 
         effect.getTransform().setWorldPosition(x, y);
 
-        SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, cfg.sprite.frames, cfg.sprite.directions);
-        AnimationClip die = new AnimationClip(sheet, cfg.sprite.frameDuration, 0, 0, cfg.sprite.frames - 1, 0);
-
-        AnimationDirector director = new AnimationDirector();
-        director.add("die", die);
-        director.play("die", false);
-        effect.addComponent(director);
-        effect.addComponent(new AnimationUpdater());
-        effect.addComponent(new SpriteRenderer(cfg.sprite.width, cfg.sprite.height));
+        TextureAtlas atlas = assets.getAtlas(Assets.slime_atlas);
+        SimpleAnimRenderer renderer = new SimpleAnimRenderer(cfg.sprite.width, cfg.sprite.height);
+        renderer.addClip("die", SimpleAnimRenderer.clipFromAtlas(atlas, "_death", cfg.sprite.frameDuration));
+        renderer.play("die", false); // non-looping → AutoDespawner destroys it
+        effect.addComponent(renderer);
         effect.addComponent(new AnimationAutoDespawner());
 
         return effect;

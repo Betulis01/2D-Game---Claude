@@ -1,6 +1,6 @@
 package com.Betulis.Game2D.game.components.ai;
 
-import com.Betulis.Game2D.engine.animation.AnimationDirector;
+import com.Betulis.Game2D.engine.render.SimpleAnimRenderer;
 import com.Betulis.Game2D.engine.system.Component;
 import com.Betulis.Game2D.engine.system.Transform;
 import com.Betulis.Game2D.game.components.combat.AttackSpawner;
@@ -17,7 +17,7 @@ public class SlimeAI extends Component {
     private WanderMovement    wander;
     private ChaseMovement     chase;
     private EntityMover       entityMover;
-    private AnimationDirector director;
+    private SimpleAnimRenderer renderer;
     private AttackSpawner     attackSpawner;
     private Transform         attackTarget;
     private float             attackTimer;
@@ -32,14 +32,13 @@ public class SlimeAI extends Component {
         wander      = gameObject.getComponent(WanderMovement.class);
         chase       = gameObject.getComponent(ChaseMovement.class);
         entityMover = gameObject.getComponent(EntityMover.class);
-        director    = gameObject.getComponent(AnimationDirector.class);
+        renderer    = gameObject.getComponent(SimpleAnimRenderer.class);
         enterWander();
     }
 
     @Override
     public void update(float dt) {
         if (!isChasing) return;
-
 
         if (chase.shouldGiveUp()) {
             enterWander();
@@ -55,7 +54,7 @@ public class SlimeAI extends Component {
 
         if (attackTimer <= 0 && dist <= ATTACK_RANGE) {
             attackSpawner.tryAttack(dx, dy);
-            director.play("attack", false);
+            if (renderer != null) renderer.play("jump", false);
             attackTimer = COOLDOWN_MIN + (float)(Math.random() * (COOLDOWN_MAX - COOLDOWN_MIN));
         }
     }

@@ -1,112 +1,77 @@
 package com.Betulis.Game2D.game.prefabs.player;
 
-import com.Betulis.Game2D.engine.animation.AnimationClip;
-import com.Betulis.Game2D.engine.animation.AnimationDirector;
-import com.Betulis.Game2D.engine.animation.AnimationUpdater;
+import com.Betulis.Game2D.engine.animation.CharacterState;
+import com.Betulis.Game2D.engine.animation.DirectionalAnimSet;
 import com.Betulis.Game2D.engine.config.ConfigLoader;
 import com.Betulis.Game2D.engine.config.EntityConfig;
-import com.Betulis.Game2D.engine.render.SpriteRenderer;
+import com.Betulis.Game2D.engine.render.LayeredSpriteRenderer;
 import com.Betulis.Game2D.engine.system.GameObject;
 import com.Betulis.Game2D.engine.system.Transform;
-import com.Betulis.Game2D.engine.utils.SpriteSheetSlicer;
+import com.Betulis.Game2D.engine.utils.Assets;
 import com.Betulis.Game2D.game.components.AABB.Hurtbox;
-import com.Betulis.Game2D.game.components.animation.PlayerAnimation;
+import com.Betulis.Game2D.game.components.animation.CharacterAnimController;
 import com.Betulis.Game2D.game.components.combat.AttackSpawner;
 import com.Betulis.Game2D.game.components.combat.CombatState;
 import com.Betulis.Game2D.game.components.movement.EntityMover;
 import com.Betulis.Game2D.game.components.movement.PlayerController;
+import com.Betulis.Game2D.game.components.render.EquipmentLayerManager;
 import com.Betulis.Game2D.game.components.stats.Health;
 import com.Betulis.Game2D.game.components.stats.PlayerXP;
 import com.Betulis.Game2D.game.input.PlayerInput;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerPrefab {
-    public GameObject create(float x, float y, Texture asset) {
+
+    public GameObject create(float x, float y, Assets assets) {
         EntityConfig cfg = new ConfigLoader().load("data/config/player.json");
-        GameObject playerObj = new GameObject("Player"); 
-        
-        //Transform
+        GameObject playerObj = new GameObject("Player");
+
+        // Transform
         playerObj.getComponent(Transform.class).setPosition(x, y);
 
-        //Movement
+        // Movement
         playerObj.addComponent(new PlayerController());
         playerObj.addComponent(new EntityMover(cfg.stats.moveSpeed));
 
-        //Animation
-        SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, cfg.sprite.frames, cfg.sprite.directions);
-        AnimationDirector director = new AnimationDirector();
-        walkClips(sheet, director, cfg.sprite.frameDuration, cfg.sprite.frames - 1);
-        idleClips(sheet, director, cfg.sprite.idleFrameDuration);
-        playerObj.addComponent(director);
-        playerObj.addComponent(new AnimationUpdater());
-        playerObj.addComponent(new SpriteRenderer(cfg.sprite.width, cfg.sprite.height));
-        playerObj.addComponent(new PlayerAnimation());
+        // Renderer
+        LayeredSpriteRenderer renderer = new LayeredSpriteRenderer(cfg.sprite.width, cfg.sprite.height);
+        playerObj.addComponent(renderer);
 
-        //Collision
+        // Body layer from atlas
+        TextureAtlas orcAtlas = assets.getAtlas(Assets.orc_atlas);
+        Map<CharacterState, DirectionalAnimSet> bodyLayer = new HashMap<>();
+        bodyLayer.put(CharacterState.IDLE, new DirectionalAnimSet(orcAtlas, "idle", cfg.sprite.idleFrameDuration));
+        bodyLayer.put(CharacterState.WALK, new DirectionalAnimSet(orcAtlas, "walk", cfg.sprite.frameDuration));
+        renderer.addLayer(bodyLayer);
 
-        //Health
+        // Animation controller
+        playerObj.addComponent(new CharacterAnimController());
+
+        // Equipment visual layer manager
+        playerObj.addComponent(new EquipmentLayerManager());
+
+        // Health
         playerObj.addComponent(new Health(cfg.stats.maxHealth, 0));
 
-        //XP
+        // XP
         PlayerXP xp = new PlayerXP();
         xp.init(cfg.stats);
         playerObj.addComponent(xp);
-        
-        //Combat
+
+        // Combat
         playerObj.addComponent(new CombatState());
 
-        //Hurtbox
-        playerObj.addComponent(new Hurtbox(cfg.hurtbox.width,cfg.hurtbox.height,cfg.hurtbox.offsetX, cfg.hurtbox.offsetY));
+        // Hurtbox
+        playerObj.addComponent(new Hurtbox(cfg.hurtbox.width, cfg.hurtbox.height,
+                cfg.hurtbox.offsetX, cfg.hurtbox.offsetY));
 
-        //Attack
+        // Attack
         playerObj.addComponent(new AttackSpawner());
         playerObj.addComponent(new PlayerInput());
 
-
         return playerObj;
-    }
-
-    public void walkClips(SpriteSheetSlicer sheet, AnimationDirector director, float frameDuration, int lastFrame) {
-        //walk
-        AnimationClip walk_up = new AnimationClip(sheet, frameDuration, 1, 0, lastFrame, 0);
-        AnimationClip walk_right = new AnimationClip(sheet, frameDuration, 1, 2, lastFrame, 2);
-        AnimationClip walk_down = new AnimationClip(sheet, frameDuration, 1, 4, lastFrame, 4);
-        AnimationClip walk_left = new AnimationClip(sheet, frameDuration, 1, 6, lastFrame, 6);
-
-        AnimationClip walk_up_right = new AnimationClip(sheet, frameDuration, 1, 1, lastFrame, 1);
-        AnimationClip walk_down_right = new AnimationClip(sheet, frameDuration, 1, 3, lastFrame, 3);
-        AnimationClip walk_down_left = new AnimationClip(sheet, frameDuration, 1, 5, lastFrame, 5);
-        AnimationClip walk_up_left = new AnimationClip(sheet, frameDuration, 1, 7, lastFrame, 7);
-        
-        director.add("walk_up", walk_up);
-        director.add("walk_up_right", walk_up_right);
-        director.add("walk_right", walk_right);
-        director.add("walk_down_right", walk_down_right);
-        director.add("walk_down", walk_down);
-        director.add("walk_down_left", walk_down_left);
-        director.add("walk_left", walk_left);
-        director.add("walk_up_left", walk_up_left);
-    }
-
-    public void idleClips(SpriteSheetSlicer sheet, AnimationDirector director, float frameDuration) {
-        //idle
-        AnimationClip idle_up = new AnimationClip(sheet, frameDuration, 0, 0, 0, 0);
-        AnimationClip idle_up_right = new AnimationClip(sheet, frameDuration, 0, 1, 0, 1);
-        AnimationClip idle_right = new AnimationClip(sheet, frameDuration, 0, 2, 0, 2);
-        AnimationClip idle_down_right = new AnimationClip(sheet, frameDuration, 0, 3, 0, 3);
-        AnimationClip idle_down = new AnimationClip(sheet, frameDuration, 0, 4, 0, 4);
-        AnimationClip idle_down_left = new AnimationClip(sheet, frameDuration, 0, 5, 0, 5);
-        AnimationClip idle_left = new AnimationClip(sheet, frameDuration, 0, 6, 0, 6);
-        AnimationClip idle_up_left = new AnimationClip(sheet, frameDuration, 0, 7, 0, 7);
-    
-
-        director.add("idle_up", idle_up);
-        director.add("idle_up_right", idle_up_right);
-        director.add("idle_right", idle_right);
-        director.add("idle_down_right", idle_down_right);
-        director.add("idle_down", idle_down);
-        director.add("idle_down_left", idle_down_left);
-        director.add("idle_left", idle_left);
-        director.add("idle_up_left", idle_up_left);
     }
 }

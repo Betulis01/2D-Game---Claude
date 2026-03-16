@@ -1,29 +1,30 @@
 package com.Betulis.Game2D.game.components.animation;
 
-import com.Betulis.Game2D.engine.animation.AnimationDirector;
+import com.Betulis.Game2D.engine.render.SimpleAnimRenderer;
 import com.Betulis.Game2D.engine.system.Component;
 import com.Betulis.Game2D.game.components.movement.EntityMover;
 
 public class SlimeAnimation extends Component {
 
-    private EntityMover entityMover;
-    private AnimationDirector director;
+    private EntityMover        entityMover;
+    private SimpleAnimRenderer renderer;
 
     @Override
     public void start() {
         entityMover = getGameObject().getComponent(EntityMover.class);
-        director    = getGameObject().getComponent(AnimationDirector.class);
+        renderer    = getGameObject().getComponent(SimpleAnimRenderer.class);
     }
 
     @Override
     public void update(float dt) {
-        if (entityMover == null || director == null) return;
-        if (!director.isLooping() && !director.isFinished()) return;
+        if (entityMover == null || renderer == null) return;
+        // Don't interrupt a non-looping animation (e.g. attack) while it's playing
+        if (!renderer.isLooping() && !renderer.isFinished()) return;
 
         if (entityMover.isMoving()) {
-            director.play("jump");
+            renderer.play("jump");
         } else {
-            director.play("idle");
+            renderer.play("idle");
         }
     }
 }

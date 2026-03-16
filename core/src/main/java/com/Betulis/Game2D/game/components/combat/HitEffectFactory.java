@@ -13,7 +13,7 @@ public class HitEffectFactory {
 
     public HitEffectFactory(Assets assets) {
         registry.put("fireball_explosion", new SpawnHitEffect(
-            target -> FireballExplosion.create(target, assets.getTexture(Assets.fireball_explode))
+            target -> FireballExplosion.create(target, assets)
         ));
         registry.put("floating_damage", new FloatingDamageEffect());
     }

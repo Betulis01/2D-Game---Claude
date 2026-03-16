@@ -13,7 +13,7 @@ public class DeathEffectFactory {
 
     public DeathEffectFactory(Assets assets) {
         registry.put("slime_death_animation", new SpawnDeathEffect(
-            (x, y) -> SlimeDeathEffect.create(x, y, assets.getTexture(Assets.slime_death))
+            (x, y) -> SlimeDeathEffect.create(x, y, assets)
         ));
     }
 

@@ -10,6 +10,7 @@ public class ItemConfig {
     public Damage damage;
     public float speed;
     public Stats stats;
+    public String spriteLayer; // nullable; atlas name for visual equipment layer (e.g. "Leather_Chest")
 
     public static class Damage {
         public int min, max;

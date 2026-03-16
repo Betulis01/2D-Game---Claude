@@ -1,7 +1,7 @@
 {
   "id": "player",
   "name": "Player",
-  "sprite": { "sheet": "player/orc8.png", "width": 32, "height": 32, "frames": 3, "directions": 8, "frameDuration": 0.2, "idleFrameDuration": 0.3 },
+  "sprite": { "sheet": "player/orc8.png", "width": 64, "height": 64, "frames": 3, "directions": 8, "frameDuration": 0.2, "idleFrameDuration": 0.3 },
   "hurtbox": { "width": 10, "height": 20, "offsetX": 0, "offsetY": -2 },
   "stats": {
     "moveSpeed": 120.0,
