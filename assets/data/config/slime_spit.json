@@ -1,0 +1,11 @@
+{
+  "id": "slime_spit",
+  "sprite": { "width": 16, "height": 16, "frames": 8, "directions": 1, "frameDuration": 0.08 },
+  "hitbox": { "width": 10, "height": 10, "offsetX": 0, "offsetY": 0 },
+  "stats": {
+    "damage": 10.0,
+    "moveSpeed": 50.0,
+    "duration": 3.0,
+    "cooldown": 0.0
+  }
+}

@@ -73,6 +73,47 @@ public final class AttackPrefabs {
         return attack;
     }
 
+    public static GameObject createSlimeSpit(EntityConfig cfg, GameObject owner, Vector2 dir, Assets assets) {
+        GameObject attack = new GameObject("SlimeSpit");
+
+        //Transform
+        Transform ot = owner.getTransform();
+        attack.getTransform().setWorldPosition(ot.getWorldX(), ot.getWorldY());
+        float angle = (float) Math.toDegrees(Math.atan2(dir.y, dir.x));
+        attack.getTransform().setRotation(angle);
+
+        //Animation
+        Texture asset = assets.getTexture(Assets.slime_spit);
+        SpriteSheetSlicer sheet = new SpriteSheetSlicer(asset, cfg.sprite.width, cfg.sprite.height, cfg.sprite.frames, cfg.sprite.directions);
+        AnimationClip fly = new AnimationClip(sheet, cfg.sprite.frameDuration, 0, 0, cfg.sprite.frames - 1, 0);
+
+        AnimationDirector director = new AnimationDirector();
+        director.add("fly", fly);
+        attack.addComponent(director);
+        attack.addComponent(new AnimationUpdater());
+        RotatedSpriteRenderer spit_rsr = new RotatedSpriteRenderer(cfg.sprite.width, cfg.sprite.height);
+        spit_rsr.setSortLayer(3);
+        attack.addComponent(spit_rsr);
+
+        //Despawner
+        attack.addComponent(new AttackOutsideMapDespawner());
+        attack.addComponent(new AttackDurationDespawner(cfg.stats.duration));
+
+        //Movement
+        attack.addComponent(new Projectile(dir));
+        attack.addComponent(new EntityMover(cfg.stats.moveSpeed));
+
+        //Hitbox
+        EntityConfig.Hitbox hi = cfg.hitbox;
+        attack.addComponent(new Hitbox(hi.width, hi.height, hi.offsetX, hi.offsetY));
+
+        //Damage
+        List<HitEffect> effects = new HitEffectFactory(assets).build(cfg.onHitEffects);
+        attack.addComponent(new DamageOnHit(owner, cfg.stats.damage, cfg.id, effects));
+
+        return attack;
+    }
+
     public static GameObject createLightningBolt(EntityConfig cfg, GameObject owner, Vector2 dir, Assets assets) {
         GameObject attack = new GameObject("LightningBolt");
 

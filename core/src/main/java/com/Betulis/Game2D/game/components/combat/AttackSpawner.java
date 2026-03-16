@@ -34,7 +34,8 @@ public final class AttackSpawner extends Component {
         var assets = getScene().getGame().getAssets();
         GameObject obj = switch (attack.id) {
             case "lightning_bolt" -> AttackPrefabs.createLightningBolt(attack, getGameObject(), dir, assets);
-            case "fireball" -> AttackPrefabs.createFireball(attack, getGameObject(), dir, assets);
+            case "fireball"       -> AttackPrefabs.createFireball(attack, getGameObject(), dir, assets);
+            case "slime_spit"     -> AttackPrefabs.createSlimeSpit(attack, getGameObject(), dir, assets);
             default -> throw new IllegalArgumentException();
         };
         getScene().addObject(obj);

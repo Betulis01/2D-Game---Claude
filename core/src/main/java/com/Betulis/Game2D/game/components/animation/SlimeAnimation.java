@@ -18,6 +18,7 @@ public class SlimeAnimation extends Component {
     @Override
     public void update(float dt) {
         if (entityMover == null || director == null) return;
+        if (!director.isLooping() && !director.isFinished()) return;
 
         if (entityMover.isMoving()) {
             director.play("jump");

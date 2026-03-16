@@ -13,6 +13,8 @@ import com.Betulis.Game2D.engine.utils.SpriteSheetSlicer;
 import com.Betulis.Game2D.game.components.AABB.Hurtbox;
 import com.Betulis.Game2D.game.components.ai.SlimeAI;
 import com.Betulis.Game2D.game.components.animation.SlimeAnimation;
+import com.Betulis.Game2D.game.components.combat.AttackPause;
+import com.Betulis.Game2D.game.components.combat.AttackSpawner;
 import com.Betulis.Game2D.game.components.combat.CombatState;
 import com.Betulis.Game2D.game.components.combat.DeathEffectFactory;
 import com.Betulis.Game2D.game.components.combat.DeathEffects;
@@ -38,10 +40,15 @@ public class SlimePrefab {
         //Movement
         float wanderSpeed = cfg.stats.moveSpeed * 0.8f;
         float chaseSpeed  = cfg.stats.moveSpeed * 1.2f;
+        float attackRange  = cfg.stats.attackRange * 1.2f;
         slimeObj.addComponent(new WanderMovement(wanderSpeed));
-        slimeObj.addComponent(new ChaseMovement(cfg.sprite.width, chaseSpeed));
+        slimeObj.addComponent(new ChaseMovement(cfg.sprite.width, chaseSpeed, attackRange));
         slimeObj.addComponent(new EntityMover(wanderSpeed));
-        SlimeAI slimeAI = new SlimeAI();
+        EntityConfig spitCfg = new ConfigLoader().load("data/config/slime_spit.json");
+        AttackSpawner attackSpawner = new AttackSpawner();
+        attackSpawner.setAttack(spitCfg);
+        slimeObj.addComponent(attackSpawner);
+        SlimeAI slimeAI = new SlimeAI(attackSpawner);
         slimeObj.addComponent(slimeAI);
 
         //Animation
@@ -51,6 +58,10 @@ public class SlimePrefab {
         AnimationClip idle = new AnimationClip(sheet, cfg.sprite.frameDuration, 0, 0, 0, 0);
         director.add("jump", jump);
         director.add("idle", idle);
+        Texture attackAsset = assets.getTexture(Assets.slime_attack);
+        SpriteSheetSlicer attackSheet = new SpriteSheetSlicer(attackAsset, 16, 16, 2, 1);
+        AnimationClip attackClip = new AnimationClip(attackSheet, 0.12, 0, 0, 1, 0);
+        director.add("attack", attackClip);
         slimeObj.addComponent(director);
         slimeObj.addComponent(new AnimationUpdater());
         slimeObj.addComponent(new SpriteRenderer(cfg.sprite.width, cfg.sprite.height));

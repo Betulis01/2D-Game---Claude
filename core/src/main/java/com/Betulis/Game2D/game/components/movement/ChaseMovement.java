@@ -6,15 +6,15 @@ import com.Betulis.Game2D.game.components.stats.Health;
 
 public class ChaseMovement extends Movement {
 
-    private final float spriteWidth;
+    private final float moveRange;
     private final float speed;
     private float range;
     private Transform target;
 
-    public ChaseMovement(float spriteWidth, float speed) {
-        this.spriteWidth = spriteWidth;
+    public ChaseMovement(float moveRange, float speed, float range) {
+        this.moveRange = moveRange;
         this.speed        = speed;
-        this.range = spriteWidth * 10;
+        this.range = range;
     }
 
     public float getSpeed() {
@@ -45,7 +45,7 @@ public class ChaseMovement extends Movement {
 
         float dist = distToTarget();
 
-        if (dist <= spriteWidth) {
+        if (dist <= moveRange) {
             moving = false;
             return;
         }

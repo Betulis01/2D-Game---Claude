@@ -27,9 +27,9 @@ public final class PlayerInput extends Component {
         SpellBar keyBar = ui.getSpellBarData();
         InputBindings.Action[] keyActions = {
             InputBindings.Action.SPELL_1, InputBindings.Action.SPELL_2,
-            InputBindings.Action.SPELL_3, InputBindings.Action.SPELL_4
+            InputBindings.Action.SPELL_3
         };
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             if (input.isPressed(keyActions[i])) {
                 SpellDefinition spell = keyBar.getSlot(i);
                 if (spell != null) castAbility(spell.getConfigPath());

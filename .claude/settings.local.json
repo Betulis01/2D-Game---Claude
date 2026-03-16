@@ -19,7 +19,10 @@
       "WebFetch(domain:danielrusnok.medium.com)",
       "WebFetch(domain:andrewrussell.net)",
       "WebFetch(domain:www.sunnyvalleystudio.com)",
-      "WebFetch(domain:mazebert.com)"
+      "WebFetch(domain:mazebert.com)",
+      "Bash(find \"/d/Dev/2D-Game - Claude\" -name \"slime.json\" -type f | head -1 | xargs cat)",
+      "Bash(cd 'D:\\\\Dev\\\\2D-Game - Claude' && ./gradlew :core:compileJava 2>&1 | grep -E \"error:|warning:|BUILD\")",
+      "Bash(cd 'D:\\\\Dev\\\\2D-Game - Claude' && ./gradlew :core:compileJava 2>&1; echo \"Exit: $?\")"
     ]
   }
 }
