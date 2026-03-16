@@ -7,9 +7,7 @@
 | Component | Purpose |
 |-----------|---------|
 | `Transform` | Parented to owner's Transform — follows target position automatically |
-| `AnimationDirector` | Single "explode" clip |
-| `AnimationUpdater` | Frame timer |
-| `RotatedSpriteRenderer` | Draws explosion frames |
+| `RotatedSpriteRenderer` | Draws explosion frames; `clipFromAtlas(fireballAtlas, "explode", dur)`, `play("explode", false)` |
 | `AudioPlayer("fireball_explosion")` | Plays explosion sound spatially on first frame |
 | `AnimationAutoDespawner` | Destroys when animation finishes |
 

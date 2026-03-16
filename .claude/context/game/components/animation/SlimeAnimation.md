@@ -6,13 +6,14 @@
 
 ## Update Logic
 ```
-if entityMover.isMoving(): director.play("jump", true)
-else:                      director.play("idle", true)
+if !renderer.isLooping() && !renderer.isFinished(): return  // don't interrupt one-shot anims
+if entityMover.isMoving(): renderer.play("walk", true)
+else:                      renderer.play("idle", true)
 ```
 
 ## Dependencies
 - `EntityMover` (sibling) — moving flag (NOT Movement directly — EntityMover is the source of truth)
-- `AnimationDirector` (sibling) — clip switching
+- `SimpleAnimRenderer` (sibling) — clip switching
 
 ## Rules
 - Must read from `EntityMover`, not `getComponent(Movement.class)` — the slime has multiple Movement components and EntityMover tracks which is active

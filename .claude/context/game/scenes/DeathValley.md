@@ -8,9 +8,13 @@
 1. Load `"scenes/DeathValley.tmx"` via TiledMapLoader
 2. Create map GameObject with `TileMapRenderer` + `ObjectLayerRenderer`
 3. Set `mapBounds` AABB from map pixel dimensions
-4. Spawn player at (100, 100) via PlayerPrefab; cache `PlayerXP` component
-5. Spawn 10 slimes at (200, 200) via SlimePrefab — no listener wiring needed
-6. Spawn camera following player, zoom 3×, world bounds clamped to map
+4. Spawn player at (100, 100) via `PlayerPrefab.create(x, y, assets)` — stores `playerObj`; caches `PlayerXP`
+5. Set AudioManager listener to player transform
+6. Spawn 10 slimes at (200, 200) via `SlimePrefab.create(x, y, assets)`
+7. Spawn camera following player, zoom 3×, world bounds clamped to map
+
+## wireUI(UIManager)
+Called from `Game.create()` after UI init. Gets `EquipmentLayerManager` from `playerObj` and calls `elm.init(panel)` to wire equipment visual layer callbacks.
 
 ## Known Issues
 - Player spawn position hardcoded at (100, 100) — must come from Tiled spawn object

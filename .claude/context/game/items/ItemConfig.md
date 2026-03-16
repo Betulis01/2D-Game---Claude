@@ -21,6 +21,9 @@
 - `Damage` — `int min`, `int max`
 - `Stats` — `int strength`, `int agility`
 
+| `spriteLayer` | `String` | Nullable. Atlas name for equipment visual layer (e.g. "Leather_Chest"). Used by `EquipmentLayerManager`. |
+
 ## Rules
 - All fields public, no-arg constructor (LibGDX Json requirement)
 - No game logic — pure data
+- `spriteLayer` is nullable — items without visual layers simply omit the field

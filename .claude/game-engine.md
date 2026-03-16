@@ -137,11 +137,11 @@ Mixing center-anchored and top-left math is the root cause of all offset bugs. I
 **Render order (in scene iteration order):**
 1. `TileMapRenderer` — ground tile layers
 2. `ObjectLayerRenderer` — static Tiled object tiles (decorations)
-3. `SpriteRenderer` / `RotatedSpriteRenderer` — entity sprites
+3. `SimpleAnimRenderer` / `LayeredSpriteRenderer` / `RotatedSpriteRenderer` — entity sprites (Y-sorted)
 4. `HealthRenderer` — world-space UI (health bars)
 5. `DebugRender` — always on top, screen-space
 
-**Depth sorting:** GameObjects render in scene array order. Objects added earlier render beneath objects added later. When explicit depth control is needed, z-order sorting by `Transform.z` must be implemented — do not rely on add-order as a depth mechanism.
+**Depth sorting:** `Scene.renderComparator` sorts by `sortLayer` first, then by Y descending (lower Y renders on top). Checks `SimpleAnimRenderer` first, then `LayeredSpriteRenderer`. `RotatedSpriteRenderer extends SimpleAnimRenderer` and is caught automatically.
 
 **Camera transform applied in every renderer:**
 ```java
@@ -280,19 +280,38 @@ AI (game/components/ai/)
 
 ## 14. Animation System
 
+All animation uses **LibGDX `Animation<TextureRegion>`** loaded from **TextureAtlas** files packed by `./gradlew packAllAtlases`.
+
+### Non-directional entities (slime, fireball, effects)
 ```
-AnimationClip       — immutable: frames[], frameDuration
-AnimationDirector   — state machine: clip registry, current clip, loop flag
-AnimationUpdater    — timer: advances frameIndex each frame
+SimpleAnimRenderer  — named clip registry, play(name, loop), isFinished()
+                    — clipFromAtlas(atlas, regionName, dur) static helper
+                    — clipFromSheet(tex, w, h, row, dur) static helper
+RotatedSpriteRenderer extends SimpleAnimRenderer — adds rotation at render time
+AnimationAutoDespawner — destroys when isFinished() on a non-looping clip
 ```
 
-**play(name, loop)** switches clips and resets the updater.
+### Directional player
+```
+CharacterDirection  — 8-way enum; fromVector() uses bearing (90-angle+360)%360
+DirectionalAnimSet  — loads 5 drawn dirs from atlas, pre-bakes flipped NW/W/SW copies
+LayeredSpriteRenderer — list of layers (Map<CharacterState, DirectionalAnimSet>)
+                      — stateTime resets on state change only (not direction)
+CharacterAnimController — reads EntityMover, drives LayeredSpriteRenderer
+EquipmentLayerManager  — adds/removes layers 1+ for equipped visual items
+```
 
-**Rules:**
-- Animation names are defined once per entity (in prefab setup) and referenced by string
-- `AnimationAutoDespawner` destroys the GameObject when a non-looping animation ends — use for one-shot effects only
-- All animation durations come from `EntityConfig` or explicit prefab setup — not magic numbers scattered in components
-- Frame duration is per-clip uniform (per-frame duration is a future improvement)
+### Atlas naming convention
+- Region name: `_<animTag>_<dirSuffix>` for directional (e.g. `_walk_se`)
+- Region name: `_<animTag>` or `<animTag>` for non-directional (e.g. `_fly`, `explode`)
+- Frame index is the numeric suffix before `.png`
+
+### Rules
+- All atlas files produced by `./gradlew packAllAtlases` — source PNGs are individual frames
+- `Assets.getAtlas()` returns null if atlas not packed yet — all callers null-check gracefully
+- No `AnimationClip`, `AnimationDirector`, `AnimationUpdater`, or `SpriteSheetSlicer` — all deleted
+- `AnimationAutoDespawner` uses `SimpleAnimRenderer.isFinished()` — not `AnimationDirector`
+- Equipment layer atlas path: `"equipment/<ItemConfig.spriteLayer>.atlas"`
 
 ---
 
@@ -387,15 +406,18 @@ public class PlayerPrefab {
 
 ## 19. Asset Management
 
-`Assets` owns all loaded textures and the LibGDX `AssetManager`.
+`Assets` owns all loaded textures, atlases, and the LibGDX `AssetManager`.
 
 - All asset paths defined in one place (`Assets.java`) — no path strings scattered in components
 - 1×1 white pixel texture created at startup for debug/UI rectangle drawing
 - `Assets.dispose()` called on application exit
+- `loadAtlasIfExists(path)` — skips load if file doesn't exist (graceful degradation before packing)
+- `getAtlas(path)` — returns null if not loaded; all callers must null-check
 
 **Rules:**
 - No `new Texture(...)` outside `Assets` or `TiledMapLoader`
 - TiledMapLoader's texture cache is cleared when the scene that loaded it is unloaded
+- New atlases require: (1) constant in `Assets.java`, (2) `loadAtlasIfExists()` call in `load()`, (3) Gradle pack task in `build.gradle`
 
 ---
 
@@ -406,16 +428,16 @@ core/src/main/java/
 ├── engine/
 │   ├── system/          Game, Scene, GameObject, Component, Transform
 │   ├── audio/           SoundCategory, SoundDef, AudioManager, AudioPlayer
-│   ├── render/          SpriteRenderer, RotatedSpriteRenderer, TileMapRenderer,
-│   │                    ObjectLayerRenderer, DebugRender
-│   ├── animation/       AnimationClip, AnimationDirector, AnimationUpdater,
+│   ├── render/          SimpleAnimRenderer, RotatedSpriteRenderer, LayeredSpriteRenderer,
+│   │                    TileMapRenderer, ObjectLayerRenderer, DebugRender
+│   ├── animation/       CharacterState, CharacterDirection, DirectionalAnimSet,
 │   │                    AnimationAutoDespawner
 │   ├── camera/          Camera, CameraZoom
 │   ├── tiled/           TiledMap, TiledMapLoader, TileData, TileLayer,
 │   │                    ObjectLayer, MapObject
 │   ├── math/            Vector2, AABB
 │   ├── config/          ConfigLoader, EntityConfig
-│   └── utils/           Assets, SpriteSheetSlicer
+│   └── utils/           Assets
 │
 └── game/
     ├── input/           InputBindings, PlayerInput
@@ -426,14 +448,15 @@ core/src/main/java/
     │   ├── combat/      AttackSpawner, AttackDurationDespawner, DamageOnHit,
     │   │                CombatState
     │   ├── collision/   Hitbox, Hurtbox, AttackOutsideMapDespawner
-    │   ├── animation/   PlayerAnimation, SlimeAnimation
+    │   ├── animation/   CharacterAnimController, SlimeAnimation
+    │   ├── render/      EquipmentLayerManager
     │   ├── stats/       Health, HealthRenderer, PlayerXP, XPReward
     │   ├── items/       LootDropper, WorldItem
     │   └── (root)       FloatingText, Interactable, InteractPrompt
     ├── items/           ItemDefinition, ItemConfig, Inventory
     ├── prefabs/         PlayerPrefab, SlimePrefab, AttackPrefabs,
-    │                    FireballExplosion, CameraPrefab, WorldItemPrefab,
-    │                    FloatingTextPrefab
+    │                    FireballExplosion, SlimeDeathEffect, CameraPrefab,
+    │                    WorldItemPrefab, FloatingTextPrefab
     ├── scenes/          DeathValley, (future scenes)
     └── ui/
         ├── widgets/     SpellSlot, ItemSlot, UILabel, EquipmentSlot

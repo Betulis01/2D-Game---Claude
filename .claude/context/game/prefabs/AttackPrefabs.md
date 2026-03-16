@@ -5,30 +5,28 @@
 
 ## Methods
 
-### `createFireball(cfg, owner, dir, asset)`
+### `createFireball(cfg, owner, dir, assets)`
 **GameObject: "Fireball"**
 | Component | Purpose |
 |-----------|---------|
 | `Transform` | Spawned at owner's world position, rotated to face direction |
 | `Projectile` | Fixed direction movement |
 | `EntityMover` | Applies projectile speed from cfg |
-| `RotatedSpriteRenderer` | Draws sprite rotated to face direction (size from cfg.sprite) |
-| `AnimationDirector/Updater` | Clip playback — frameDuration and frame count from cfg |
+| `RotatedSpriteRenderer` | Draws sprite rotated to face direction; `clipFromAtlas(fireballAtlas, "_fly", dur)` |
 | `Hitbox` | Offensive bounds from cfg.hitbox |
 | `DamageOnHit` | Hit detection → damage |
-| `AudioPlayer` (0..N) | One per `cfg.spawnSounds` entry — fires sound on first frame |
+| `AudioPlayer` (0..N) | One per `cfg.spawnSounds` entry |
 | `AttackDurationDespawner` | Destroys after cfg.stats.duration |
 | `AttackOutsideMapDespawner` | Destroys when leaving map |
 
-### `createLightningBolt(cfg, owner, dir, asset)`
-Identical component setup to Fireball — different sprite and stats from its own cfg.
+### `createLightningBolt(cfg, owner, dir, assets)`
+Identical setup to Fireball — `clipFromAtlas(lightningAtlas, "_fly", dur)`.
+
+### `createSlimeSpit(cfg, owner, dir, assets)`
+Identical setup — `clipFromAtlas(spitAtlas, "_fly", dur)`.
 
 ## Rules
-- All stats (speed, damage, duration) and all sprite dimensions from `EntityConfig cfg` parameter
-- `SpriteSheetSlicer` uses `cfg.sprite.frames` and `cfg.sprite.directions`
-- `RotatedSpriteRenderer` uses `cfg.sprite.width/height`
-- Animation end frame = `cfg.sprite.frames - 1` — no hardcoded frame indices
-- `frameDuration` from `cfg.sprite.frameDuration`
-
-## Known Issues
-- `createFireball` and `createLightningBolt` bodies are mostly duplicated — extract shared `createProjectile()` base
+- All stats and sprite dimensions from `EntityConfig cfg`
+- All projectiles use `RotatedSpriteRenderer` + `clipFromAtlas()`
+- Sort layer 3 for all attack sprites
+- No `AnimationDirector`, `AnimationUpdater`, or `SpriteSheetSlicer` — all replaced by atlas pipeline

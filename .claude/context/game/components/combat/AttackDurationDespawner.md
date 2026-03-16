@@ -19,10 +19,10 @@ if durationTimer >= maxDuration:
 | `durationTimer` | `float` | Elapsed time |
 
 ## Dependencies
-- `AnimationDirector` (sibling) — switches to "noHit" clip on expiry
-- `AnimationAutoDespawner` — destroys the object after the "noHit" clip finishes
+- `SimpleAnimRenderer` (sibling) — switches to "noHit" clip on expiry (null-safe)
 
 ## Rules
 - Duration comes from EntityConfig — not hardcoded
 - If DamageOnHit fires first, it destroys the object before this timer triggers — no conflict
-- "noHit" clip must be registered on the AnimationDirector at prefab construction time
+- "noHit" clip play is a best-effort: if clip not registered, it's silently skipped
+- Destroys self via internal 0.5s `despawnTimer` after duration expires

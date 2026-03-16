@@ -52,14 +52,14 @@ _walk_ne
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 0
+  index: 1
 _walk_ne
   rotate: false
   xy: 134, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 1
+  index: 0
 _idle_s
   rotate: false
   xy: 200, 2

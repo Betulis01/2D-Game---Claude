@@ -27,7 +27,8 @@ transform.setPosition(nextX, nextY)
 |-------|------|---------|
 | `speed` | `float` | World units per second |
 | `movement` | `Movement` | Currently active movement behavior (swappable at runtime) |
-| `sprite` | `SpriteRenderer` | Half-extents for bounds clamping |
+| `sprite` | `SimpleAnimRenderer` | Half-extents for bounds clamping (null if entity uses LayeredSpriteRenderer) |
+| `layeredSprite` | `LayeredSpriteRenderer` | Alternative renderer for bounds clamping (player) |
 
 ## Key Methods
 | Method | Purpose |
@@ -40,7 +41,7 @@ transform.setPosition(nextX, nextY)
 
 ## Dependencies
 - `Movement` (sibling, active) — direction and moving state
-- `SpriteRenderer` (sibling) — sprite dimensions for clamping
+- `SimpleAnimRenderer` or `LayeredSpriteRenderer` (sibling, whichever is present) — sprite dimensions for clamping
 - `Scene.getMap()` — world bounds
 
 ## Rules

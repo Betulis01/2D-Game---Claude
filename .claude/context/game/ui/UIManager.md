@@ -67,6 +67,9 @@ playerXP.setOnLevelUp(() -> {
 ```
 Player transform captured once via `findPlayerTransform()` — NOT inside the callback — to avoid nested iterator crash.
 
+## Key Accessors
+- `getCharacterPanel()` — returns `character`; used by `DeathValley.wireUI()` to init `EquipmentLayerManager`
+
 ## Dependencies
 - All panel classes in `game.ui.panels`, `game.ui.widgets`
 - `InputBindings`, `PlayerXP`, `PlayerStats`, `Equipment`, `Game`

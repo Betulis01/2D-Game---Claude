@@ -1,21 +1,21 @@
 # AnimationAutoDespawner
 
 **File:** `core/.../engine/animation/AnimationAutoDespawner.java`
-**Extends:** `Component`
-**Role:** Destroys the parent GameObject when a non-looping animation finishes. Used for one-shot effects (explosions, hit sparks).
+**Extends/Type:** `Component`
+**Role:** Destroys its GameObject when the current non-looping animation finishes playing.
 
-## Update Logic
-```
-if director.isFinished(): gameObject.destroy()
-```
+## Fields
+| Field | Type | Purpose |
+|---|---|---|
+| `renderer` | `SimpleAnimRenderer` | Renderer to poll for animation completion |
+
+## Key Methods / Logic
+- `start()`: resolves `SimpleAnimRenderer` from the same GameObject.
+- `update(dt)`: if `renderer != null && renderer.isFinished()` → calls `getGameObject().destroy()`.
 
 ## Dependencies
-- `AnimationDirector` — polls `isFinished()`
-
-## Usage
-- Attach to any effect GameObject that should self-destruct after playing once
-- Assumes the AnimationDirector is configured with a non-looping clip
+- `SimpleAnimRenderer.isFinished()`
 
 ## Rules
-- Only useful when the clip is non-looping — attaching to a looping clip does nothing
-- Destruction is deferred to end-of-frame via Scene's removal queue
+- Only fires when the animation is non-looping AND has reached its end (`isFinished()` is false for looping clips).
+- Used on `FireballExplosion` and `SlimeDeathEffect`.

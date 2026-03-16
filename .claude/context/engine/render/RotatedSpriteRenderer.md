@@ -1,19 +1,19 @@
 # RotatedSpriteRenderer
 
 **File:** `core/.../engine/render/RotatedSpriteRenderer.java`
-**Extends:** `SpriteRenderer`
-**Role:** Same as SpriteRenderer but applies `transform.rotation` when drawing. Used for projectiles.
+**Extends/Type:** `extends SimpleAnimRenderer`
+**Role:** `SimpleAnimRenderer` variant that applies transform rotation when drawing. Used by projectile attacks (Fireball, LightningBolt, SlimeSpit).
 
-## Render Logic
-```
-batch.draw(frame, x, y, originX, originY, width, height, scaleX, scaleY, rotation)
-// origin = center of sprite for correct rotation pivot
-```
+## Key Methods / Logic
+- Constructor: `RotatedSpriteRenderer(float width, float height)` — delegates to `super`.
+- `render(batch)`: calls `getCurrentFrame()` (inherited protected method), then `batch.draw(frame, x, y, originX, originY, w, h, 1, 1, rotation)` using `transform.getWorldRotation()`.
+- Inherits all clip management, `play()`, `isFinished()`, sort accessors from `SimpleAnimRenderer`.
 
-## Difference from SpriteRenderer
-- Uses 9-parameter `batch.draw()` overload with rotation
-- Origin point set to sprite center so rotation pivots correctly
+## Dependencies
+- `SimpleAnimRenderer` (parent)
+- `Camera` (via `getScene().getCamera()`)
+- `transform.getWorldRotation()`
 
 ## Rules
-- Rotation in degrees, taken from `transform.rotation`
-- All other rules identical to SpriteRenderer (center-anchored, read-only, camera-transformed)
+- No own fields — all state lives in `SimpleAnimRenderer`.
+- `Scene.renderComparator` catches it via the `SimpleAnimRenderer` check automatically.

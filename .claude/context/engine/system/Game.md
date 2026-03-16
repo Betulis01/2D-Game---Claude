@@ -17,9 +17,10 @@
 
 ## Lifecycle
 ```
-create() → load assets, set input processor, load initial scene
-render() → scene.update(dt) → scene.render(batch)
-dispose() → assets.dispose()
+create() → load assets + audio, set input, load DeathValley scene
+         → init UIManager → wireUI() (equipment layer callbacks)
+render() → scene.update(dt) → ui.update(dt) → scene.render(batch) → ui.render(batch)
+dispose() → batch.dispose(), audioManager.dispose()
 ```
 
 ## Key Methods

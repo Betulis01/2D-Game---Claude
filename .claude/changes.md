@@ -5,6 +5,16 @@
 
 ---
 
+## 2026-03-16
+- Animation overhaul: replaced AnimationClip/Director/Updater/SpriteRenderer/SpriteSheetSlicer with LibGDX Animation<TextureRegion> + TextureAtlas
+- New: CharacterState, CharacterDirection (8-way + fromVector bearing), DirectionalAnimSet (pre-baked flips), SimpleAnimRenderer, LayeredSpriteRenderer
+- New: CharacterAnimController (drives LayeredSpriteRenderer from EntityMover), EquipmentLayerManager (visual equipment layers)
+- All entities (slime, fireball, lightning, spit, effects) now use SimpleAnimRenderer + atlas; player uses LayeredSpriteRenderer
+- build.gradle: added packTools config, makePackTask() helper, 5 atlas pack tasks + packAllAtlases master task
+- TexturePacker.md guide added to .claude/context/
+
+---
+
 ## 2026-03-15
 - Audio system: new `engine/audio/` package — `SoundCategory` (enum), `SoundDef` (JSON POJO), `AudioManager` (load/play/spatial), `AudioPlayer` (fire-and-forget component)
 - `AudioManager.play()`: spatial falloff (vol + pan from dist to camera) for GAMEPLAY; flat for MENU; streams/loops for MUSIC

@@ -32,11 +32,15 @@ onUnload() [override] → cleanup
 - `getCamera()` / `setCamera(Camera)` — scene camera access
 - `getMap()` / `getMapBounds()` — tile map access
 
+## renderComparator
+Sorts world objects by sortLayer first, then by Y position descending (lower Y = higher on screen = rendered last). Checks `SimpleAnimRenderer` first, then `LayeredSpriteRenderer` if null. `RotatedSpriteRenderer` is caught by the `SimpleAnimRenderer` check automatically.
+
 ## Rules
 - `overlayObjects` are rendered after all world objects — always appear on top
 - `SnapshotArray.begin()/end()` wraps all iteration to allow safe modification mid-frame
 - Companion overlay GameObjects (e.g. `InteractPrompt`) must be removed via `removeOverlayObject()` — `GameObject.destroy()` only calls `removeObject()`
 - Each scene is a Java subclass — level data (spawns, map path) should come from Tiled, not hardcoded in `onLoad()`
+- Renderer sort: check `SimpleAnimRenderer` → then `LayeredSpriteRenderer`. Never check old `SpriteRenderer`.
 
 ## Known Issues
 - Spawn positions and entity counts are hardcoded in `DeathValley.onLoad()` — must move to Tiled object layer

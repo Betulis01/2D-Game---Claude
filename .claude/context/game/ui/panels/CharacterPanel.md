@@ -4,19 +4,16 @@
 **Extends:** `UIPanel`
 **Role:** Equipment panel displaying all gear slots and a stats block with level, STR/AGI/STA/SPD/DMG.
 
-## Layout
-- Position: `(20, screenH/2 - 250)`, Size: 200×480
-- Background: `ui/panels/character_panel.png`
-- Left column (5 slots): Head, Shoulder, Back, Chest, Wrist
-- Right column (5 slots): Hands, Waist, Legs, Feet, Relic
-- Bottom center (4 slots): Ring1, Ring2, Trinket1, Trinket2
-- Weapon row (2 slots): Weapon left + right
-- Center stats block: "Level X" in gold at (x+w/2-28, y+h-60), then STR/AGI/STA/SPD/DMG in white
+## Layout (10 slots)
+- Left column (3 slots): Head, Chest, Legs
+- Right column (3 slots): Weapon, Shield, Relic
+- Bottom row (4 slots): Ring1, Ring2, Trinket1, Trinket2
+- Center stats block: "Level X" in gold, then STR/AGI/STA/SPD/DMG in white
 
 ## Fields
 | Field | Type | Purpose |
 |-------|------|---------|
-| `equipSlots` | `List<EquipmentSlot>` | All 14 equipment slot widgets |
+| `equipSlots` | `List<EquipmentSlot>` | All 10 equipment slot widgets |
 | `playerStats` | `PlayerStats` | Stats model for display |
 | `playerXP` | `PlayerXP` | Provides level number for display |
 

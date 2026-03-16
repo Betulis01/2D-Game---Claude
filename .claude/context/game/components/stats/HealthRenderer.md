@@ -30,8 +30,9 @@ batch.draw(whitePixel, screenX, screenY, fillWidth * zoom, barHeight * zoom, red
 ## Dependencies
 - `Health` (sibling) — current/max HP
 - `CombatState` (sibling) — visibility gate
+- `SimpleAnimRenderer` (sibling) — sprite height for vertical offset
 - `Camera` (via scene) — world→screen transform
-- `Assets.whitePixel` — texture for drawing filled rectangles
+- `Assets.getPixel()` — texture for drawing filled rectangles
 
 ## Rules
 - Bar centered on entity horizontally
