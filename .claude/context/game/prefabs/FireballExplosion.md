@@ -10,6 +10,7 @@
 | `AnimationDirector` | Single "explode" clip |
 | `AnimationUpdater` | Frame timer |
 | `RotatedSpriteRenderer` | Draws explosion frames |
+| `AudioPlayer("fireball_explosion")` | Plays explosion sound spatially on first frame |
 | `AnimationAutoDespawner` | Destroys when animation finishes |
 
 ## Config

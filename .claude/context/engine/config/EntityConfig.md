@@ -3,6 +3,15 @@
 **File:** `core/.../engine/config/EntityConfig.java`
 **Role:** Serializable data class representing a complete entity definition loaded from JSON. All balance stats, dimensions, and animation timing live here, not in Java code.
 
+## Top-Level Fields
+| Field | Type | Purpose |
+|-------|------|---------|
+| `id`, `name` | `String` | Identity |
+| `onHitEffects` | `String[]` | Effect ids to spawn on hit |
+| `onDeathEffects` | `String[]` | Effect ids to spawn on death |
+| `spawnSounds` | `String[]` | Sound ids played when the entity is spawned (via `AudioPlayer`) |
+| `sprite`, `collision`, `hurtbox`, `hitbox`, `stats` | nested | See nested classes below |
+
 ## Structure
 ```json
 {

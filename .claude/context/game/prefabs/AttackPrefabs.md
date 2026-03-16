@@ -16,6 +16,7 @@
 | `AnimationDirector/Updater` | Clip playback — frameDuration and frame count from cfg |
 | `Hitbox` | Offensive bounds from cfg.hitbox |
 | `DamageOnHit` | Hit detection → damage |
+| `AudioPlayer` (0..N) | One per `cfg.spawnSounds` entry — fires sound on first frame |
 | `AttackDurationDespawner` | Destroys after cfg.stats.duration |
 | `AttackOutsideMapDespawner` | Destroys when leaving map |
 

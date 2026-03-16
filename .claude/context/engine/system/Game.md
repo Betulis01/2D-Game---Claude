@@ -9,6 +9,7 @@
 |-------|------|---------|
 | `batch` | `SpriteBatch` | Shared renderer — passed to all render calls |
 | `assets` | `Assets` | Central texture/asset store |
+| `audioManager` | `AudioManager` | Central sound system — loaded in `initSystems()` |
 | `scene` | `Scene` | Currently active scene |
 | `input` | `InputBindings` | Global input processor |
 | `screenWidth/Height` | `int` | Window dimensions |
@@ -24,6 +25,7 @@ dispose() → assets.dispose()
 ## Key Methods
 - `loadScene(Scene)` — swaps active scene (safe to call mid-frame; takes effect next frame)
 - `getAssets()` — returns shared Assets instance
+- `getAudioManager()` — returns the AudioManager
 - `getScene()` — returns the currently active Scene
 - `getUI()` — returns the UIManager
 - `getScreenWidth/Height()` — used by camera and renderers

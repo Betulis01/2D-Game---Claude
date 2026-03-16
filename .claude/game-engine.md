@@ -405,6 +405,7 @@ public class PlayerPrefab {
 core/src/main/java/
 ├── engine/
 │   ├── system/          Game, Scene, GameObject, Component, Transform
+│   ├── audio/           SoundCategory, SoundDef, AudioManager, AudioPlayer
 │   ├── render/          SpriteRenderer, RotatedSpriteRenderer, TileMapRenderer,
 │   │                    ObjectLayerRenderer, DebugRender
 │   ├── animation/       AnimationClip, AnimationDirector, AnimationUpdater,
@@ -444,7 +445,55 @@ Engine code (`engine/`) has **zero dependencies** on game code (`game/`). Game c
 
 ---
 
-## 21. Item & Loot System
+## 21. Audio System
+
+### Architecture
+```
+Game
+ └── AudioManager (owns all Sound/Music instances)
+      └── loaded from data/config/audio/sounds.json
+
+AudioPlayer (Component, fire-and-forget)
+ └── start() → audioManager.play(id, worldX, worldY, camera) → setEnabled(false)
+```
+
+### Sound Categories
+| Category | Behaviour |
+|----------|-----------|
+| `GAMEPLAY` | Spatial: volume + pan from distance to camera |
+| `MENU` | Flat one-shot (no position) |
+| `MUSIC` | Streamed, looping, flat |
+
+### Spatial Formula (GAMEPLAY)
+```java
+dist = distance(soundPos, cameraPos)
+vol  = max(0, 1 - dist / maxDistance) * baseVolume * catVol
+pan  = clamp(dx / (maxDistance * 0.5), -1, 1)
+sound.play(vol, 1, pan)
+```
+
+### sounds.json Format
+```json
+[
+  { "id": "fireball_spawn", "path": "abilities/fireball/sounds/fireball_2.mp3",
+    "category": "GAMEPLAY", "baseVolume": 1.0, "maxDistance": 400.0 }
+]
+```
+
+### Wiring a Spawn Sound to an Entity
+1. Add entry to `sounds.json`
+2. Add `"spawnSounds": ["your_id"]` to the entity's JSON config (`EntityConfig.spawnSounds`)
+3. Prefab factory loops `cfg.spawnSounds` and adds `new AudioPlayer(id)` — done
+
+### Rules
+- `AudioManager` is owned and disposed by `Game`
+- `AudioPlayer` is the only way sounds trigger from world entities — no direct `audioManager` calls from game components
+- Music/ambient managed directly: `audioManager.playMusic(id)` / `stopMusic()`
+- All sound paths are in `sounds.json` — no path strings in Java code
+
+---
+
+## 22. Item & Loot System  <!-- was §21 -->
 
 ### Data Layer
 - `ItemConfig` — POJO deserialized from `data/config/items/*.json` via LibGDX `Json`
@@ -508,7 +557,7 @@ Released in open space             → spawnWorldItemAtPlayer()
 
 ---
 
-## 22. XP, Leveling & Floating Text
+## 23. XP, Leveling & Floating Text  <!-- was §22 -->
 
 ### XP Flow
 ```
@@ -541,7 +590,7 @@ libGDX `SnapshotArray` supports at most **2 simultaneous for-each iterators**. T
 
 ---
 
-## 23. Known Issues (Must Fix Before Extending)
+## 24. Known Issues (Must Fix Before Extending)
 
 | Issue | Location | Fix |
 |-------|----------|-----|
@@ -553,10 +602,12 @@ libGDX `SnapshotArray` supports at most **2 simultaneous for-each iterators**. T
 | `AttackSpawner` switch on attack ID | `AttackSpawner.java` | Move dispatch to prefab factory |
 | Fireball/LightningBolt code duplicated | `AttackPrefabs.java` | Extract shared `createProjectile()` base |
 | EntityConfig fields all public | `EntityConfig.java` | No change needed for now (LibGDX Json requires it) |
+| `SoundCategory.valueOf()` throws on bad input | `AudioManager.java` | Wrap in try/catch, log warning, skip entry |
+| Music volume not updated by `setCategoryVolume` while playing | `AudioManager.java` | Call `currentMusic.setVolume()` inside `setCategoryVolume` |
 
 ---
 
-## 23. Design Principles (Always Apply)
+## 25. Design Principles (Always Apply)
 
 1. **Center-anchored everywhere** — transforms, bounds, rendering
 2. **Config-driven stats** — no magic numbers in Java

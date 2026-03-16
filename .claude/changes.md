@@ -6,6 +6,12 @@
 ---
 
 ## 2026-03-15
+- Audio system: new `engine/audio/` package — `SoundCategory` (enum), `SoundDef` (JSON POJO), `AudioManager` (load/play/spatial), `AudioPlayer` (fire-and-forget component)
+- `AudioManager.play()`: spatial falloff (vol + pan from dist to camera) for GAMEPLAY; flat for MENU; streams/loops for MUSIC
+- `sounds.json` at `data/config/audio/sounds.json`; `fireball_spawn` + `fireball_explosion` entries added
+- `EntityConfig`: added `String[] spawnSounds` field; `fireball.json` wired with `["fireball_spawn"]`
+- `AttackPrefabs.createFireball()`: null-safe loop adds `AudioPlayer` per `cfg.spawnSounds` entry
+- `FireballExplosion`: adds `AudioPlayer("fireball_explosion")` — plays spatially at explosion world position
 - Interactable component system: extracted proximity/input/prompt logic out of WorldItem into reusable Interactable + InteractPrompt
 - New: `Interactable(range, action, onInteract)` — range check (squared dist), fires callback; spawns InteractPrompt companion into overlayObjects
 - New: `InteractPrompt(source)` — overlay component; reads source transform, draws button above item only when inRange
