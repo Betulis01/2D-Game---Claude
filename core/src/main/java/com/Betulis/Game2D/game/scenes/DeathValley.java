@@ -41,6 +41,7 @@ public class DeathValley extends Scene {
         GameObject playerObj = playerPrefab.create(100, 100, getGame().getAssets().getTexture("player/orc8.png"));
         playerXP = playerObj.getComponent(PlayerXP.class);
         addObject(playerObj);
+        getGame().getAudioManager().setListenerTransform(playerObj.getComponent(Transform.class));
 
         //Slimes
         SlimePrefab slimePrefab = new SlimePrefab();

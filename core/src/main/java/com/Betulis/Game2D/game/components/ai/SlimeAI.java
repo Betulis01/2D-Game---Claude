@@ -3,7 +3,6 @@ package com.Betulis.Game2D.game.components.ai;
 import com.Betulis.Game2D.engine.animation.AnimationDirector;
 import com.Betulis.Game2D.engine.system.Component;
 import com.Betulis.Game2D.engine.system.Transform;
-import com.Betulis.Game2D.game.components.combat.AttackPause;
 import com.Betulis.Game2D.game.components.combat.AttackSpawner;
 import com.Betulis.Game2D.game.components.movement.ChaseMovement;
 import com.Betulis.Game2D.game.components.movement.EntityMover;
@@ -20,7 +19,6 @@ public class SlimeAI extends Component {
     private EntityMover       entityMover;
     private AnimationDirector director;
     private AttackSpawner     attackSpawner;
-    private AttackPause       attackPause;
     private Transform         attackTarget;
     private float             attackTimer;
     private boolean           isChasing;
@@ -35,7 +33,6 @@ public class SlimeAI extends Component {
         chase       = gameObject.getComponent(ChaseMovement.class);
         entityMover = gameObject.getComponent(EntityMover.class);
         director    = gameObject.getComponent(AnimationDirector.class);
-        attackPause = gameObject.getComponent(AttackPause.class);
         enterWander();
     }
 
@@ -43,8 +40,6 @@ public class SlimeAI extends Component {
     public void update(float dt) {
         if (!isChasing) return;
 
-        // Don't interrupt the attack animation
-        if (attackPause.isPaused()) return;
 
         if (chase.shouldGiveUp()) {
             enterWander();
@@ -60,7 +55,6 @@ public class SlimeAI extends Component {
 
         if (attackTimer <= 0 && dist <= ATTACK_RANGE) {
             attackSpawner.tryAttack(dx, dy);
-            attackPause.pause(chase, chase.getSpeed());
             director.play("attack", false);
             attackTimer = COOLDOWN_MIN + (float)(Math.random() * (COOLDOWN_MAX - COOLDOWN_MIN));
         }

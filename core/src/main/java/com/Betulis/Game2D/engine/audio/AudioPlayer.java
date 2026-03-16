@@ -13,7 +13,7 @@ public class AudioPlayer extends Component {
     @Override
     public void start() {
         getScene().getGame().getAudioManager()
-            .play(soundId, transform.getWorldX(), transform.getWorldY(), getScene().getCamera());
+            .play(soundId, (float) transform.getWorldX(), (float) transform.getWorldY());
         setEnabled(false);
     }
 }

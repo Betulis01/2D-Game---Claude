@@ -1,6 +1,6 @@
 package com.Betulis.Game2D.engine.audio;
 
-import com.Betulis.Game2D.engine.camera.Camera;
+import com.Betulis.Game2D.engine.system.Transform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -20,6 +20,7 @@ public class AudioManager {
     private final Map<SoundCategory, Float> categoryVolumes = new HashMap<>();
 
     private Music currentMusic;
+    private Transform listenerTransform;
 
     public AudioManager() {
         for (SoundCategory cat : SoundCategory.values()) {
@@ -50,8 +51,12 @@ public class AudioManager {
         }
     }
 
+    public void setListenerTransform(Transform transform) {
+        this.listenerTransform = transform;
+    }
+
     /** Play a GAMEPLAY (spatial) or MENU (flat) sound. */
-    public void play(String id, float x, float y, Camera cam) {
+    public void play(String id, float x, float y) {
         SoundDef def = defs.get(id);
         Sound sound = sounds.get(id);
         if (def == null || sound == null) return;
@@ -59,9 +64,9 @@ public class AudioManager {
         SoundCategory cat = SoundCategory.valueOf(def.category);
         float catVol = categoryVolumes.getOrDefault(cat, 1f);
 
-        if (cat == SoundCategory.GAMEPLAY && cam != null) {
-            float cx = cam.getGameObject().getTransform().getWorldX();
-            float cy = cam.getGameObject().getTransform().getWorldY();
+        if (cat == SoundCategory.GAMEPLAY && listenerTransform != null) {
+            float cx = (float) listenerTransform.getWorldX();
+            float cy = (float) listenerTransform.getWorldY();
             float dx = x - cx;
             float dy = y - cy;
             float dist = (float) Math.sqrt(dx * dx + dy * dy);
@@ -75,6 +80,7 @@ public class AudioManager {
             sound.play(def.baseVolume * catVol);
         }
     }
+
 
     public void playMusic(String id) {
         stopMusic();
